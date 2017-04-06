@@ -1,7 +1,7 @@
 #pragma once
 #include "Engine.h"
 #include "ModuleManager.h"
-#include "EditorTool.h"
+#include "FaustToolsBaseClass.h"
 #include "UMotionVector.generated.h"
 
 class FMVTickObject;
@@ -16,7 +16,7 @@ class ASkeletalMeshActor;
 class AStaticMeshActor;
 
 UCLASS(Blueprintable)
-class UMotionVector : public UEditorTool
+class UMotionVector : public UFaustToolsBaseClass
 {
 	GENERATED_BODY()
 private:

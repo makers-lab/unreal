@@ -3,7 +3,7 @@
 #include "IDetailCustomization.h"
 
 
-class FEditorToolCustomization : public IDetailCustomization
+class FFaustToolsCustomization : public IDetailCustomization
 {
 public:
 	virtual void CustomizeDetails(IDetailLayoutBuilder& DetailBuilder) override;

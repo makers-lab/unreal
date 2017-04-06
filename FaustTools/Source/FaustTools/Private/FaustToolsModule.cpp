@@ -1,8 +1,8 @@
-#include "EditorExtensionsEditorPrivatePCH.h"
-#include "EditorTool.h"
+#include "FaustTools/Private/FaustToolsPrivatePCH.h"
+#include "FaustToolsBaseClass.h"
 #include "PropertyEditorModule.h"
 #include "LevelEditor.h"
-#include "EditorToolCustomization.h"
+#include "FaustToolsCustomization.h"
 
 #define LOCTEXT_NAMESPACE "DemoTools"
 
@@ -16,7 +16,7 @@ public:
 
 	static void TriggerTool(UClass* ToolClass);
 	static void CreateToolListMenu(class FMenuBuilder& MenuBuilder);
-	static void OnToolWindowClosed(const TSharedRef<SWindow>& Window, UEditorTool* Instance);
+	static void OnToolWindowClosed(const TSharedRef<SWindow>& Window, UFaustToolsBaseClass* Instance);
 
 	TSharedPtr<FUICommandList> CommandList;
 };
@@ -26,7 +26,7 @@ void FEditorExtensionsEditorModule::StartupModule()
 	// Register the details customizations
 	{
 		FPropertyEditorModule& PropertyModule = FModuleManager::LoadModuleChecked<FPropertyEditorModule>(TEXT("PropertyEditor"));
-		PropertyModule.RegisterCustomClassLayout(TEXT("MotionVector"), FOnGetDetailCustomizationInstance::CreateStatic(&FEditorToolCustomization::MakeInstance));
+		PropertyModule.RegisterCustomClassLayout(TEXT("MotionVector"), FOnGetDetailCustomizationInstance::CreateStatic(&FFaustToolsCustomization::MakeInstance));
 		PropertyModule.NotifyCustomizationModuleChanged();
 	}
 
@@ -68,7 +68,7 @@ void FEditorExtensionsEditorModule::ShutdownModule()
 
 void FEditorExtensionsEditorModule::TriggerTool(UClass* ToolClass)
 {
-	UEditorTool* ToolInstance = NewObject<UEditorTool>(GetTransientPackage(), ToolClass);
+	UFaustToolsBaseClass* ToolInstance = NewObject<UFaustToolsBaseClass>(GetTransientPackage(), ToolClass);
 	ToolInstance->AddToRoot();
 
 	FPropertyEditorModule& PropertyModule = FModuleManager::LoadModuleChecked<FPropertyEditorModule>("PropertyEditor");
@@ -87,7 +87,7 @@ void FEditorExtensionsEditorModule::CreateToolListMenu(class FMenuBuilder& MenuB
 		UClass* Class = *ClassIt;
 		if (!Class->HasAnyClassFlags(CLASS_Deprecated | CLASS_NewerVersionExists | CLASS_Abstract))
 		{
-			if (Class->IsChildOf(UEditorTool::StaticClass()))
+			if (Class->IsChildOf(UFaustToolsBaseClass::StaticClass()))
 			{
 				FString FriendlyName = Class->GetName();
 				FText MenuDescription = FText::Format(LOCTEXT("ToolMenuDescription", "{0}"), FText::FromString(FriendlyName));
@@ -105,7 +105,7 @@ void FEditorExtensionsEditorModule::CreateToolListMenu(class FMenuBuilder& MenuB
 	}
 }
 
-void FEditorExtensionsEditorModule::OnToolWindowClosed(const TSharedRef<SWindow>& Window, UEditorTool* Instance)
+void FEditorExtensionsEditorModule::OnToolWindowClosed(const TSharedRef<SWindow>& Window, UFaustToolsBaseClass* Instance)
 {
 	Instance->RemoveFromRoot();
 	Instance->OnToolClosed();

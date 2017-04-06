@@ -1,8 +1,8 @@
 using UnrealBuildTool;
 
-public class EditorExtensionsEditor : ModuleRules
+public class FaustTools : ModuleRules
 {
-	public EditorExtensionsEditor(TargetInfo Target)
+	public FaustTools(TargetInfo Target)
 	{
 		PublicDependencyModuleNames.AddRange(
 			new string[] {
@@ -10,8 +10,10 @@ public class EditorExtensionsEditor : ModuleRules
 				"CoreUObject",
 				"Engine",
 				"Slate",
-				"UnrealEd"
-			}
+				"UnrealEd",
+                "Networking",
+                "Sockets"
+            }
 		);
 		
 		PrivateDependencyModuleNames.AddRange(
@@ -29,6 +31,8 @@ public class EditorExtensionsEditor : ModuleRules
                     "Developer/AssetTools/Public",
                     "Editor/UnrealEd/Public",
                     "Editor/UnrealEd/Classes",
+                    "FaustTools/Private",
+                    "FaustTools/Public"
                    // ... add public include paths required here ...
                }
                );
@@ -39,7 +43,7 @@ public class EditorExtensionsEditor : ModuleRules
                     "Developer/MVEditor/Private",
                     "Editor/UnrealEd/Public",
                     "Editor/UnrealEd/Classes",
-                        "Editor/UnrealEd/Private"
+                    "Editor/UnrealEd/Private"
 					// ... add other private include paths required here ...
 				}
                 );

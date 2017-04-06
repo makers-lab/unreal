@@ -1,10 +1,10 @@
-#include "EditorExtensionsEditorPrivatePCH.h"
-#include "EditorToolCustomization.h"
+#include "FaustTools/Private/FaustToolsPrivatePCH.h"
+#include "FaustToolsCustomization.h"
 #include "PropertyEditing.h"
 
 #define LOCTEXT_NAMESPACE "EditorTool"
 
-void FEditorToolCustomization::CustomizeDetails(IDetailLayoutBuilder& DetailBuilder)
+void FFaustToolsCustomization::CustomizeDetails(IDetailLayoutBuilder& DetailBuilder)
 {
 	TSet<UClass*> Classes;
 
@@ -20,12 +20,12 @@ void FEditorToolCustomization::CustomizeDetails(IDetailLayoutBuilder& DetailBuil
 	}
 }
 
-TSharedRef<IDetailCustomization> FEditorToolCustomization::MakeInstance()
+TSharedRef<IDetailCustomization> FFaustToolsCustomization::MakeInstance()
 {
-	return MakeShareable(new FEditorToolCustomization);
+	return MakeShareable(new FFaustToolsCustomization);
 }
 
-FReply FEditorToolCustomization::ExecuteToolCommand(IDetailLayoutBuilder* DetailBuilder, UFunction* MethodToExecute)
+FReply FFaustToolsCustomization::ExecuteToolCommand(IDetailLayoutBuilder* DetailBuilder, UFunction* MethodToExecute)
 {
 	TArray<TWeakObjectPtr<UObject>> ObjectsBeingCustomized;
 	DetailBuilder->GetObjectsBeingCustomized(ObjectsBeingCustomized);

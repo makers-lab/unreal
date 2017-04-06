@@ -1,9 +1,9 @@
 #pragma once
 
-#include "EditorTool.generated.h"
+#include "FaustToolsBaseClass.generated.h"
 
 UCLASS(Blueprintable, Abstract)
-class UEditorTool : public UObject
+class UFaustToolsBaseClass : public UObject
 {
 	GENERATED_BODY()
 public:

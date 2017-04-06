@@ -1,4 +1,4 @@
-#include "EditorExtensionsEditorPrivatePCH.h"
+#include "FaustTools/Private/FaustToolsPrivatePCH.h"
 #include "UnrealEd.h"
 #include "MVTickObject.h"
 #include "Runtime/Engine/Classes/Animation/SkeletalMeshActor.h"
@@ -28,7 +28,6 @@ UMotionVector::UMotionVector()
 
 void UMotionVector::Tick(float DeltaTime)
 {
-	//UE_LOG(MVEditor, Warning, TEXT("maxspeed %f"), MaxSpeed)
 	if (!GEditor) return;
 	if (GEditor->GetPIEWorldContext())
 	{
