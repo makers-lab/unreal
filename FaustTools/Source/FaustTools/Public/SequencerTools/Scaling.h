@@ -2,9 +2,12 @@
 
 #include "Engine.h"
 #include "FaustToolsBaseClass.h"
+//#include "Scaling.generated.h"
 
-class Scale
+//UCLASS()
+class UScale //: public UObject
 {
+	//GENERATED_BODY()
 public:
 	void ScaleTop(TArray<float>& ValuesToEdit, float Delta, bool bScaleCapturedOnly);
 	void ScaleBot(TArray<float>& ValuesToEdit, float Delta, bool bScaleCapturedOnly);

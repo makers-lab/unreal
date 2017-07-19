@@ -6,9 +6,9 @@
 /NAME:"UE4Editor-FaustTools.dll"
 /IGNORE:4221
 /NODEFAULTLIB
-"E:\EpicGames\UE_4.16\Engine\Intermediate\Build\Win64\UE4Editor\Development\UnrealEd\SharedPCH.UnrealEd.h.obj"
+"D:\Epic Games\UE_4.16\Engine\Intermediate\Build\Win64\UE4Editor\Development\UnrealEd\SharedPCH.UnrealEd.h.obj"
 "D:\Sadovnichy\SequencerPlugin\Plugins\FaustTools\Intermediate\Build\Win64\UE4Editor\Development\FaustTools\Module.FaustTools.cpp.obj"
 "D:\Sadovnichy\SequencerPlugin\Plugins\FaustTools\Intermediate\Build\Win64\UE4Editor\Development\FaustTools\FaustTools.generated.cpp.obj"
-"E:\EpicGames\UE_4.16\Engine\Intermediate\Build\Win64\UE4Editor\Development\FaustTools\PCLaunch.rc.res"
-"E:\EpicGames\UE_4.16\Engine\Intermediate\Build\Win64\UE4Editor\Development\ModuleVersionResource.rc.inl.res"
+"D:\Epic Games\UE_4.16\Engine\Intermediate\Build\Win64\UE4Editor\Development\FaustTools\PCLaunch.rc.res"
+"D:\Epic Games\UE_4.16\Engine\Intermediate\Build\Win64\UE4Editor\Development\ModuleVersionResource.rc.inl.res"
 /OUT:"D:\Sadovnichy\SequencerPlugin\Plugins\FaustTools\Intermediate\Build\Win64\UE4Editor\Development\UE4Editor-FaustTools.lib"

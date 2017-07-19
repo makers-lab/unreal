@@ -5,7 +5,8 @@
 #include "FaustToolsBaseClass.h"
 #include "USequencerTools.generated.h"
 
-class Scale;
+class UScale;
+
 
 UCLASS(Blueprintable)
 class USequencerTools : public UFaustToolsBaseClass
@@ -23,6 +24,20 @@ public:
 	void CaptureRange();
 	UFUNCTION(Exec)
 	void ResetCapture();
+
+	UPROPERTY(EditAnywhere, Category = "Transform Parameters")
+	bool Location;
+	UPROPERTY(EditAnywhere, Category = "Transform Parameters")
+	bool Rotation;
+	UPROPERTY(EditAnywhere, Category = "Transform Parameters")
+	bool Scaling;
+
+	UPROPERTY(EditAnywhere, Category = "Curve Parameters")
+	bool X;
+	UPROPERTY(EditAnywhere, Category = "Curve Parameters")
+	bool Y;
+	UPROPERTY(EditAnywhere, Category = "Curve Parameters")
+	bool Z;
 
 	UPROPERTY(EditAnywhere, Category = "Parameters", meta = (DisplayName = "From Frame", Keywords = "From Frame"))
 	int32 FromFrame;
@@ -52,9 +67,10 @@ public:
 	float OldScaleRightValue;
 
 private:
-	TSharedPtr<Scale> Scaling;
+	TSharedPtr<UScale> Scale;
 
 	TArray<float> ValuesToEdit;
+	TArray<float> TimesToEdit;
 };
 
 

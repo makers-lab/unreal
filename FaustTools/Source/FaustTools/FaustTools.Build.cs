@@ -12,7 +12,15 @@ public class FaustTools : ModuleRules
 				"Slate",
 				"UnrealEd",
                 "Networking",
-                "Sockets"
+                "Sockets",
+                "Core",
+            "InputCore",
+            "EditorStyle",
+            "Slate",
+            "RenderCore",
+            "ShaderCore",
+            "SlateCore",
+            "LevelSequence"
             }
 		);
 		
@@ -22,25 +30,30 @@ public class FaustTools : ModuleRules
 				"SlateCore",
 				"PropertyEditor",
 				"LevelEditor",
+                "EditorStyle",
                 "MovieScene",
-                "MovieSceneTracks"
+                "MovieSceneTracks",
             }
 		);
 
         PublicIncludePaths.AddRange(
                new string[] {
+                    "FaustTools/Public",
                     "Editor/UnrealEd/Public/UnrealEd",
                     "Developer/AssetTools/Public",
                     "Editor/UnrealEd/Public",
                     "Editor/UnrealEd/Classes",
                     "FaustTools/Private",
                     "FaustTools/Public",
+                    
+
                    // ... add public include paths required here ...
                }
                );
 
         PrivateIncludePaths.AddRange(
                 new string[] {
+                    "FaustTools/Private",
                     "Editor/UnrealEd/Public/UnrealEd",
                     "Editor/UnrealEd/Public",
                     "Editor/UnrealEd/Classes",
@@ -48,19 +61,5 @@ public class FaustTools : ModuleRules
 					// ... add other private include paths required here ...
 				}
                 );
-
-        PublicDependencyModuleNames.AddRange(new string[] {
-            "Core",
-            "CoreUObject",
-            "InputCore",
-            "EditorStyle",
-            "Engine",
-            "UnrealEd",
-            "Slate",
-            "RenderCore",
-            "ShaderCore",
-            "SlateCore",
-            "LevelSequence"
-        });
     }
 }

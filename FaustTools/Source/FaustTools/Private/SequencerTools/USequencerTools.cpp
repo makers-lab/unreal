@@ -15,7 +15,7 @@ USequencerTools::USequencerTools()
 	ScaleRightValue = 1.f;
 	OldScaleRightValue = ScaleRightValue;
 
-	Scaling = MakeShared<Scale>();
+	Scale = MakeShared<UScale>();
 }
 
 void USequencerTools::PreEditChange(UProperty* PropertyAboutToChange)
@@ -44,25 +44,25 @@ void USequencerTools::PostEditChangeProperty(FPropertyChangedEvent& PropertyChan
 		if (PropertyThatChanged->GetName() == "ScaleTopValue")
 		{
 			float Delta = OldScaleTopValue - ScaleTopValue;
-			Scaling->ScaleTop(ValuesToEdit, Delta, bScaleCapturedRange);
+			Scale->ScaleTop(ValuesToEdit, Delta, bScaleCapturedRange);
 			OldScaleTopValue = ScaleTopValue;
 		}
 		if (PropertyThatChanged->GetName() == "ScaleBotValue")
 		{
 			float Delta = OldScaleBotValue - ScaleBotValue;
-			Scaling->ScaleBot(ValuesToEdit, Delta, bScaleCapturedRange);
+			Scale->ScaleBot(ValuesToEdit, Delta, bScaleCapturedRange);
 			OldScaleBotValue = ScaleBotValue;
 		}
 		if (PropertyThatChanged->GetName() == "ScaleLeftValue")
 		{
 			float Delta = OldScaleLeftValue - ScaleLeftValue;
-			Scaling->ScaleLeft(ValuesToEdit, Delta, bScaleCapturedRange);
+			Scale->ScaleLeft(ValuesToEdit, Delta, bScaleCapturedRange);
 			OldScaleLeftValue = ScaleLeftValue;
 		}
 		if (PropertyThatChanged->GetName() == "ScaleRightValue")
 		{
 			float Delta = OldScaleRightValue - ScaleRightValue;
-			Scaling->ScaleRight(ValuesToEdit, Delta, bScaleCapturedRange);
+			Scale->ScaleRight(ValuesToEdit, Delta, bScaleCapturedRange);
 			OldScaleRightValue = ScaleRightValue;
 		}
 	}
@@ -77,6 +77,27 @@ void USequencerTools::OnToolClosed()
 void USequencerTools::CaptureRange()
 {
 	ULevelSequence * Sequencer = Cast<ULevelSequence>(USupport::GetAssetWithOpenedEditor(ULevelSequence::StaticClass()));
+	if (Sequencer->IsValidLowLevel())
+	{
+		FSelectionIterator Sel = GEditor->GetSelectedActorIterator();
+		for (Sel; Sel; ++Sel)
+		{
+			AActor * SelActor = Cast<AActor >(*Sel);
+			if (SelActor->IsValidLowLevel())
+			{
+				UMovieScene3DTransformSection * TransformSection = USupport::GetTransformSectionFromActor(Sequencer, SelActor);
+				if (TransformSection->IsValidLowLevel())
+				{
+					GEditor->BeginTransaction(FText::FromString("Capture Range"));
+
+					
+
+					GEditor->EndTransaction();
+				}
+			}
+		}
+	}
+	else USupport::NotificationBox(FString("Open Level Sequence Editor to work with!"));
 }
 
 void USequencerTools::ResetCapture()
