@@ -18,6 +18,34 @@ void FFaustToolsCustomization::CustomizeDetails(IDetailLayoutBuilder& DetailBuil
 			Classes.Add(Instance->GetClass());
 		}
 	}
+
+	IDetailCategoryBuilder& Parameters = DetailBuilder.EditCategory("Parameters");
+
+	for (UClass* Class : Classes)
+	{
+		for (TFieldIterator<UFunction> FuncIt(Class); FuncIt; ++FuncIt)
+		{
+			UFunction* Function = *FuncIt;
+			if (Function->HasAnyFunctionFlags(FUNC_Exec) && (Function->NumParms == 0))
+			{
+				const FString FunctionName = Function->GetName();
+				const FText ButtonCaption = FText::FromString(FunctionName);
+				const FText FilteringString = FText::FromString(FunctionName);
+				const TAttribute <FText> ToolTip = FText::Format(LOCTEXT("ToolTipText", "{0}"), Function->GetToolTipText());
+				if (FunctionName == "CaptureRange" || FunctionName == "ResetCapture")
+				{
+					Parameters.AddCustomRow(FilteringString)
+						.ValueContent()
+						[
+							SNew(SButton)
+							.Text(ButtonCaption)
+						.ToolTipText(ToolTip)
+						.OnClicked(FOnClicked::CreateStatic(&FFaustToolsCustomization::ExecuteToolCommand, &DetailBuilder, Function))
+						];
+				}
+			}
+		}
+	}
 }
 
 TSharedRef<IDetailCustomization> FFaustToolsCustomization::MakeInstance()

@@ -450,5 +450,6 @@ void UMotionVector::OnToolClosed()
 	if (TickObject != nullptr)
 		delete TickObject;
 }
+
 #undef LOCTEXT_NAMESPACE
 

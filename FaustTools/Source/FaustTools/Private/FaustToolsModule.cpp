@@ -26,7 +26,7 @@ void FEditorExtensionsEditorModule::StartupModule()
 	// Register the details customizations
 	{
 		FPropertyEditorModule& PropertyModule = FModuleManager::LoadModuleChecked<FPropertyEditorModule>(TEXT("PropertyEditor"));
-		PropertyModule.RegisterCustomClassLayout(TEXT("MotionVector"), FOnGetDetailCustomizationInstance::CreateStatic(&FFaustToolsCustomization::MakeInstance));
+		PropertyModule.RegisterCustomClassLayout(TEXT("FaustToolsBaseClass"), FOnGetDetailCustomizationInstance::CreateStatic(&FFaustToolsCustomization::MakeInstance));
 		PropertyModule.NotifyCustomizationModuleChanged();
 	}
 
@@ -76,7 +76,7 @@ void FEditorExtensionsEditorModule::TriggerTool(UClass* ToolClass)
 	TArray<UObject*> ObjectsToView;
 	ObjectsToView.Add(ToolInstance);
 	TSharedRef<SWindow> Window = PropertyModule.CreateFloatingDetailsView(ObjectsToView, /*bIsLockeable=*/ false);
-
+	Window->SetTitle(FText::FromString(ToolClass->GetName()));
 	Window->SetOnWindowClosed(FOnWindowClosed::CreateStatic(&FEditorExtensionsEditorModule::OnToolWindowClosed, ToolInstance));
 }
 
