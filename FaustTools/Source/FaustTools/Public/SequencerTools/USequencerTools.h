@@ -6,7 +6,15 @@
 #include "USequencerTools.generated.h"
 
 class UScale;
+class ULevelSequence;
+class UMovieScene3DTransformSection;
 
+enum TransformType
+{
+	Loc,
+	Rot,
+	Sca
+};
 
 UCLASS(Blueprintable)
 class USequencerTools : public UFaustToolsBaseClass
@@ -66,8 +74,27 @@ public:
 	float ScaleRightValue;
 	float OldScaleRightValue;
 
+	UPROPERTY(EditAnywhere, Category = "Scaling", meta = (DisplayName = "Move Horizontal", Keywords = "Move Horizontal"))
+	float MoveHorizontalValue;
+	float OldMoveHorizontalValue;
+
+	UPROPERTY(EditAnywhere, Category = "Scaling", meta = (DisplayName = "Move Vertical", Keywords = "Move Vertical"))
+	float MoveVerticalValue;
+	float OldMoveVerticalValue;
+
 private:
 	TSharedPtr<UScale> Scale;
+	ULevelSequence * Sequencer = nullptr;
+	UMovieScene3DTransformSection * TransformSection = nullptr;
+
+	void GetValuesAndTimesToEditFromCurve(FRichCurve Curve, float FromTime, float ToTime, TArray<float>& OutValues, TArray<float>& OutTimes);
+	void GetTransformAndCurves(TArray<TransformType>& TransformTypes, TArray<EAxis::Type>& Axises);
+
+	TMap<EAxis::Type, TArray<float>> CurvesValuesToEdit;
+	TMap<EAxis::Type, TArray<float>> CurvesTimesToEdit;
+
+	TArray<TransformType> TransformTypes;
+	TArray<EAxis::Type> Axises;
 
 	TArray<float> ValuesToEdit;
 	TArray<float> TimesToEdit;

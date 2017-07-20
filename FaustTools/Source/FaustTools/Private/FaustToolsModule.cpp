@@ -63,7 +63,7 @@ void FEditorExtensionsEditorModule::StartupModule()
 void FEditorExtensionsEditorModule::ShutdownModule()
 {
 	FPropertyEditorModule& PropertyModule = FModuleManager::LoadModuleChecked<FPropertyEditorModule>("PropertyEditor");
-	PropertyModule.UnregisterCustomClassLayout("MotionVector");
+	PropertyModule.UnregisterCustomClassLayout("FaustToolsBaseClass");
 }
 
 void FEditorExtensionsEditorModule::TriggerTool(UClass* ToolClass)

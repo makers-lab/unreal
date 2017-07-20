@@ -235,6 +235,8 @@ PRAGMA_ENABLE_DEPRECATION_WARNINGS
 				OuterClass->LinkChild(Z_Construct_UFunction_USequencerTools_ResetCapture());
 
 PRAGMA_DISABLE_DEPRECATION_WARNINGS
+				UProperty* NewProp_MoveVerticalValue = new(EC_InternalUseOnlyConstructor, OuterClass, TEXT("MoveVerticalValue"), RF_Public|RF_Transient|RF_MarkAsNative) UFloatProperty(CPP_PROPERTY_BASE(MoveVerticalValue, USequencerTools), 0x0010000000000001);
+				UProperty* NewProp_MoveHorizontalValue = new(EC_InternalUseOnlyConstructor, OuterClass, TEXT("MoveHorizontalValue"), RF_Public|RF_Transient|RF_MarkAsNative) UFloatProperty(CPP_PROPERTY_BASE(MoveHorizontalValue, USequencerTools), 0x0010000000000001);
 				UProperty* NewProp_ScaleRightValue = new(EC_InternalUseOnlyConstructor, OuterClass, TEXT("ScaleRightValue"), RF_Public|RF_Transient|RF_MarkAsNative) UFloatProperty(CPP_PROPERTY_BASE(ScaleRightValue, USequencerTools), 0x0010000000000001);
 				UProperty* NewProp_ScaleLeftValue = new(EC_InternalUseOnlyConstructor, OuterClass, TEXT("ScaleLeftValue"), RF_Public|RF_Transient|RF_MarkAsNative) UFloatProperty(CPP_PROPERTY_BASE(ScaleLeftValue, USequencerTools), 0x0010000000000001);
 				UProperty* NewProp_ScaleBotValue = new(EC_InternalUseOnlyConstructor, OuterClass, TEXT("ScaleBotValue"), RF_Public|RF_Transient|RF_MarkAsNative) UFloatProperty(CPP_PROPERTY_BASE(ScaleBotValue, USequencerTools), 0x0010000000000001);
@@ -267,6 +269,14 @@ PRAGMA_ENABLE_DEPRECATION_WARNINGS
 				MetaData->SetValue(OuterClass, TEXT("IncludePath"), TEXT("SequencerTools/USequencerTools.h"));
 				MetaData->SetValue(OuterClass, TEXT("IsBlueprintBase"), TEXT("true"));
 				MetaData->SetValue(OuterClass, TEXT("ModuleRelativePath"), TEXT("Public/SequencerTools/USequencerTools.h"));
+				MetaData->SetValue(NewProp_MoveVerticalValue, TEXT("Category"), TEXT("Scaling"));
+				MetaData->SetValue(NewProp_MoveVerticalValue, TEXT("DisplayName"), TEXT("Move Vertical"));
+				MetaData->SetValue(NewProp_MoveVerticalValue, TEXT("Keywords"), TEXT("Move Vertical"));
+				MetaData->SetValue(NewProp_MoveVerticalValue, TEXT("ModuleRelativePath"), TEXT("Public/SequencerTools/USequencerTools.h"));
+				MetaData->SetValue(NewProp_MoveHorizontalValue, TEXT("Category"), TEXT("Scaling"));
+				MetaData->SetValue(NewProp_MoveHorizontalValue, TEXT("DisplayName"), TEXT("Move Horizontal"));
+				MetaData->SetValue(NewProp_MoveHorizontalValue, TEXT("Keywords"), TEXT("Move Horizontal"));
+				MetaData->SetValue(NewProp_MoveHorizontalValue, TEXT("ModuleRelativePath"), TEXT("Public/SequencerTools/USequencerTools.h"));
 				MetaData->SetValue(NewProp_ScaleRightValue, TEXT("Category"), TEXT("Scaling"));
 				MetaData->SetValue(NewProp_ScaleRightValue, TEXT("DisplayName"), TEXT("Scale Right"));
 				MetaData->SetValue(NewProp_ScaleRightValue, TEXT("Keywords"), TEXT("Scale Right"));
@@ -315,7 +325,7 @@ PRAGMA_ENABLE_DEPRECATION_WARNINGS
 		check(OuterClass->GetClass());
 		return OuterClass;
 	}
-	IMPLEMENT_CLASS(USequencerTools, 2268921488);
+	IMPLEMENT_CLASS(USequencerTools, 893677196);
 	static FCompiledInDefer Z_CompiledInDefer_UClass_USequencerTools(Z_Construct_UClass_USequencerTools, &USequencerTools::StaticClass, TEXT("/Script/FaustTools"), TEXT("USequencerTools"), false, nullptr, nullptr, nullptr);
 	DEFINE_VTABLE_PTR_HELPER_CTOR(USequencerTools);
 	void USupport::StaticRegisterNativesUSupport()
@@ -363,7 +373,7 @@ PRAGMA_ENABLE_DEPRECATION_WARNINGS
 			ReturnPackage = CastChecked<UPackage>(StaticFindObjectFast(UPackage::StaticClass(), nullptr, FName(TEXT("/Script/FaustTools")), false, false));
 			ReturnPackage->SetPackageFlags(PKG_CompiledIn | 0x00000040);
 			FGuid Guid;
-			Guid.A = 0xB1369CD1;
+			Guid.A = 0x1437352B;
 			Guid.B = 0x3D8CF95A;
 			Guid.C = 0x00000000;
 			Guid.D = 0x00000000;

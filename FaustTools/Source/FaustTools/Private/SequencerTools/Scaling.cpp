@@ -1,23 +1,34 @@
 #include "FaustTools/Private/FaustToolsPrivatePCH.h"
 #include "Scaling.h"
+#include "MovieScene3DTransformSection.h"
 
 
-void UScale::ScaleTop(TArray<float>& ValuesToEdit, float Delta, bool bScaleCapturedOnly)
+void UScale::ScaleTop(UMovieScene3DTransformSection * TransformSection, TMap<EAxis::Type, TArray<float>>& ValuesToEdit, float Delta)
 {
-	//_LOG("%f", Delta);
+	_LOG("%s",*TransformSection->GetName());
 }
 
-void UScale::ScaleBot(TArray<float>& ValuesToEdit, float Delta, bool bScaleCapturedOnly)
+void UScale::ScaleBot(UMovieScene3DTransformSection * TransformSection, TMap<EAxis::Type, TArray<float>>& ValuesToEdit, float Delta)
 {
-	//_LOG("%f", Delta);
+	_LOG("%s", *TransformSection->GetName());
 }
 
-void UScale::ScaleLeft(TArray<float>& ValuesToEdit, float Delta, bool bScaleCapturedOnly)
+void UScale::ScaleLeft(UMovieScene3DTransformSection * TransformSection, TMap<EAxis::Type, TArray<float>>& ValuesToEdit, float Delta, bool bScaleCapturedOnly)
 {
-	//_LOG("%f", Delta);
+	_LOG("%s", *TransformSection->GetName());
 }
 
-void UScale::ScaleRight(TArray<float>& ValuesToEdit, float Delta, bool bScaleCapturedOnly)
+void UScale::ScaleRight(UMovieScene3DTransformSection * TransformSection, TMap<EAxis::Type, TArray<float>>& ValuesToEdit, float Delta, bool bScaleCapturedOnly)
 {
-	//_LOG("%f", Delta);
+	_LOG("%s", *TransformSection->GetName());
+}
+
+void UScale::MoveHorizontal(UMovieScene3DTransformSection * TransformSection, TMap<EAxis::Type, TArray<float>>& ValuesToEdit, float Delta)
+{
+	_LOG("%s", *TransformSection->GetName());
+}
+
+void UScale::MoveVertical(UMovieScene3DTransformSection * TransformSection, TMap<EAxis::Type, TArray<float>>& ValuesToEdit, float Delta)
+{
+	_LOG("%s", *TransformSection->GetName());
 }
