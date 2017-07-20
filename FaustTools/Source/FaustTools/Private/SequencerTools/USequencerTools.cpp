@@ -46,39 +46,47 @@ void USequencerTools::PostEditChangeProperty(FPropertyChangedEvent& PropertyChan
 		}
 		if (PropertyThatChanged->GetName() == "ScaleTopValue")
 		{
-			float Delta = OldScaleTopValue - ScaleTopValue;
-			Scale->ScaleTop(TransformSection, CurvesValuesToEdit, Delta);
-			OldScaleTopValue = ScaleTopValue;
+			for (auto Type : TransformTypes)
+			{
+				for (auto Axis : Axises)
+				{
+					Scale->ScaleTop(TransformSection, Type, Axis, TransformToEdit, MaxValue, MinValue, ScaleTopValue);
+				}
+			}
 		}
 		if (PropertyThatChanged->GetName() == "ScaleBotValue")
 		{
-			float Delta = OldScaleBotValue - ScaleBotValue;
-			Scale->ScaleBot(TransformSection, CurvesValuesToEdit, Delta);
-			OldScaleBotValue = ScaleBotValue;
+			for (auto Type : TransformTypes)
+			{
+				for (auto Axis : Axises)
+				{
+					Scale->ScaleBot(TransformSection, Type, Axis, TransformToEdit, MaxValue, MinValue, ScaleBotValue);
+				}
+			}
 		}
 		if (PropertyThatChanged->GetName() == "ScaleLeftValue")
 		{
 			float Delta = OldScaleLeftValue - ScaleLeftValue;
-			Scale->ScaleLeft(TransformSection, CurvesValuesToEdit, Delta, bScaleCapturedRange);
+			//Scale->ScaleLeft(TransformSection, CurvesTimesToEdit, MaxValue, MinValue, Delta, bScaleCapturedRange);
 			OldScaleLeftValue = ScaleLeftValue;
 		}
 		if (PropertyThatChanged->GetName() == "ScaleRightValue")
 		{
 			float Delta = OldScaleRightValue - ScaleRightValue;
-			Scale->ScaleRight(TransformSection, CurvesValuesToEdit, Delta, bScaleCapturedRange);
+			//Scale->ScaleRight(TransformSection, CurvesTimesToEdit, MaxValue, MinValue, Delta, bScaleCapturedRange);
 			OldScaleRightValue = ScaleRightValue;
 		}
 
 		if (PropertyThatChanged->GetName() == "MoveHorizontalValue")
 		{
 			float Delta = OldMoveHorizontalValue - MoveHorizontalValue;
-			Scale->MoveHorizontal(TransformSection, CurvesValuesToEdit, Delta);
+			//Scale->MoveHorizontal(TransformSection, CurvesValuesToEdit, CurvesTimesToEdit, Delta);
 			OldMoveHorizontalValue = MoveHorizontalValue;
 		}
 		if (PropertyThatChanged->GetName() == "MoveVerticalValue")
 		{
 			float Delta = OldMoveVerticalValue - MoveVerticalValue;
-			Scale->MoveVertical(TransformSection, CurvesValuesToEdit, Delta);
+			//Scale->MoveVertical(TransformSection, CurvesValuesToEdit, CurvesTimesToEdit, Delta);
 			OldMoveVerticalValue = MoveVerticalValue;
 		}
 	}
@@ -87,7 +95,7 @@ void USequencerTools::PostEditChangeProperty(FPropertyChangedEvent& PropertyChan
 
 void USequencerTools::OnToolClosed()
 {
-
+	ResetCapture();
 }
 
 void USequencerTools::CaptureRange()
@@ -118,39 +126,123 @@ void USequencerTools::CaptureRange()
 					float P2 = ToFrame / Frames * 100;
 					float ToTime = MaxTime / 100 * P2;
 					
+					GetTransformAndCurves(TransformTypes, Axises);
 					
-					for (auto Type : TransformTypes)
+					if (Location)
 					{
-						if (Type == TransformType::Loc)
+						if (X)
 						{
-							for (auto Axis : Axises)
-							{
-								GetValuesAndTimesToEditFromCurve(TransformSection->GetTranslationCurve(Axis), FromTime, ToTime, ValuesToEdit, TimesToEdit);
-								CurvesValuesToEdit.Add(Axis, ValuesToEdit);
-								CurvesTimesToEdit.Add(Axis, TimesToEdit);
-							}
+							GetValuesAndTimesToEditFromCurve(TransformSection->GetTranslationCurve(EAxis::X),
+								FromTime,
+								ToTime,
+								TransformToEdit.Locaion.X.Values,
+								TransformToEdit.Locaion.X.Times,
+								TransformToEdit.Locaion.X.Indexes);
 						}
-
-						if (Type == TransformType::Rot)
+						if (Y)
 						{
-							for (auto Axis : Axises)
-							{
-								GetValuesAndTimesToEditFromCurve(TransformSection->GetTranslationCurve(Axis), FromTime, ToTime, ValuesToEdit, TimesToEdit);
-								CurvesValuesToEdit.Add(Axis, ValuesToEdit);
-								CurvesTimesToEdit.Add(Axis, TimesToEdit);
-							}
+							GetValuesAndTimesToEditFromCurve(TransformSection->GetTranslationCurve(EAxis::Y),
+								FromTime,
+								ToTime,
+								TransformToEdit.Locaion.Y.Values,
+								TransformToEdit.Locaion.Y.Times,
+								TransformToEdit.Locaion.Y.Indexes);
 						}
-
-						if (Type == TransformType::Sca)
+						if (Z)
 						{
-							for (auto Axis : Axises)
-							{
-								GetValuesAndTimesToEditFromCurve(TransformSection->GetTranslationCurve(Axis), FromTime, ToTime, ValuesToEdit, TimesToEdit);
-								CurvesValuesToEdit.Add(Axis, ValuesToEdit);
-								CurvesTimesToEdit.Add(Axis, TimesToEdit);
-							}
+							GetValuesAndTimesToEditFromCurve(TransformSection->GetTranslationCurve(EAxis::Z),
+								FromTime,
+								ToTime,
+								TransformToEdit.Locaion.Z.Values,
+								TransformToEdit.Locaion.Z.Times,
+								TransformToEdit.Locaion.Z.Indexes);
 						}
 					}
+
+					if (Rotation)
+					{
+						if (X)
+						{
+							GetValuesAndTimesToEditFromCurve(TransformSection->GetRotationCurve(EAxis::X),
+								FromTime,
+								ToTime,
+								TransformToEdit.Rotation.X.Values,
+								TransformToEdit.Rotation.X.Times,
+								TransformToEdit.Rotation.X.Indexes);
+						}
+						if (Y)
+						{
+							GetValuesAndTimesToEditFromCurve(TransformSection->GetRotationCurve(EAxis::Y),
+								FromTime,
+								ToTime,
+								TransformToEdit.Rotation.Y.Values,
+								TransformToEdit.Rotation.Y.Times,
+								TransformToEdit.Rotation.Y.Indexes);
+						}
+						if (Z)
+						{
+							GetValuesAndTimesToEditFromCurve(TransformSection->GetRotationCurve(EAxis::Z),
+								FromTime,
+								ToTime,
+								TransformToEdit.Rotation.Z.Values,
+								TransformToEdit.Rotation.Z.Times,
+								TransformToEdit.Rotation.Z.Indexes);
+						}
+					}
+
+					if (Scaling)
+					{
+						if (X)
+						{
+							GetValuesAndTimesToEditFromCurve(TransformSection->GetScaleCurve(EAxis::X),
+								FromTime,
+								ToTime,
+								TransformToEdit.Scale.X.Values,
+								TransformToEdit.Scale.X.Times,
+								TransformToEdit.Scale.X.Indexes);
+						}
+						if (Y)
+						{
+							GetValuesAndTimesToEditFromCurve(TransformSection->GetScaleCurve(EAxis::Y),
+								FromTime,
+								ToTime,
+								TransformToEdit.Scale.Y.Values,
+								TransformToEdit.Scale.Y.Times,
+								TransformToEdit.Scale.Y.Indexes);
+						}
+						if (Z)
+						{
+							GetValuesAndTimesToEditFromCurve(TransformSection->GetScaleCurve(EAxis::Z),
+								FromTime,
+								ToTime,
+								TransformToEdit.Scale.Z.Values,
+								TransformToEdit.Scale.Z.Times,
+								TransformToEdit.Scale.Z.Indexes);
+						}
+					}
+					
+
+					TArray <float> SortedValues;
+					
+					SortedValues += TransformToEdit.Locaion.X.Values;
+					SortedValues += TransformToEdit.Locaion.Y.Values;
+					SortedValues += TransformToEdit.Locaion.Z.Values;
+					SortedValues += TransformToEdit.Rotation.X.Values;
+					SortedValues += TransformToEdit.Rotation.Y.Values;
+					SortedValues += TransformToEdit.Rotation.Z.Values;
+					SortedValues += TransformToEdit.Scale.X.Values;
+					SortedValues += TransformToEdit.Scale.Y.Values;
+					SortedValues += TransformToEdit.Scale.Z.Values;
+
+					SortedValues.Sort(
+						[](const float lhv, const float rhv)
+					{
+						return lhv < rhv;
+					}
+					);
+					MaxValue = SortedValues.Last();
+					MinValue = SortedValues[0];
+
 					GEditor->EndTransaction();
 				}
 			}
@@ -164,16 +256,16 @@ void USequencerTools::ResetCapture()
 {
 	ValuesToEdit.Empty();
 	TimesToEdit.Empty();
-	CurvesTimesToEdit.Empty();
 	CurvesValuesToEdit.Empty();
 	TransformTypes.Empty();
 	Axises.Empty();
 }
 
-void USequencerTools::GetValuesAndTimesToEditFromCurve(FRichCurve Curve, float FromTime, float ToTime, TArray<float>& OutValues, TArray<float>& OutTimes)
+void USequencerTools::GetValuesAndTimesToEditFromCurve(FRichCurve Curve, float FromTime, float ToTime, TArray<float>& OutValues, TArray<float>& OutTimes, TArray<int32>& OutIndexes)
 {
-	OutTimes.Empty();
 	OutValues.Empty();
+	OutTimes.Empty();
+	OutIndexes.Empty();
 	auto Keys = Curve.Keys;
 	for (int32 Index = 0; Index < Keys.Num(); Index++)
 	{
@@ -181,6 +273,7 @@ void USequencerTools::GetValuesAndTimesToEditFromCurve(FRichCurve Curve, float F
 		{
 			OutTimes.Add(Keys[Index].Time);
 			OutValues.Add(Keys[Index].Value);
+			OutIndexes.Add(Index);
 		}
 	}
 }

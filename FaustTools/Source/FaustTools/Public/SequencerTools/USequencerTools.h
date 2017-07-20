@@ -9,12 +9,8 @@ class UScale;
 class ULevelSequence;
 class UMovieScene3DTransformSection;
 
-enum TransformType
-{
-	Loc,
-	Rot,
-	Sca
-};
+enum TransformType;
+struct CustomTransform;
 
 UCLASS(Blueprintable)
 class USequencerTools : public UFaustToolsBaseClass
@@ -87,17 +83,21 @@ private:
 	ULevelSequence * Sequencer = nullptr;
 	UMovieScene3DTransformSection * TransformSection = nullptr;
 
-	void GetValuesAndTimesToEditFromCurve(FRichCurve Curve, float FromTime, float ToTime, TArray<float>& OutValues, TArray<float>& OutTimes);
+	CustomTransform TransformToEdit;
+
+	void GetValuesAndTimesToEditFromCurve(FRichCurve Curve, float FromTime, float ToTime, TArray<float>& OutValues, TArray<float>& OutTimes, TArray<int32>& OutIndexes);
 	void GetTransformAndCurves(TArray<TransformType>& TransformTypes, TArray<EAxis::Type>& Axises);
 
-	TMap<EAxis::Type, TArray<float>> CurvesValuesToEdit;
-	TMap<EAxis::Type, TArray<float>> CurvesTimesToEdit;
+	TMap<EAxis::Type, CustomTransform> CurvesValuesToEdit;
 
 	TArray<TransformType> TransformTypes;
 	TArray<EAxis::Type> Axises;
 
 	TArray<float> ValuesToEdit;
 	TArray<float> TimesToEdit;
+
+	float MinValue;
+	float MaxValue;
 };
 
 
