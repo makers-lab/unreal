@@ -70,14 +70,6 @@ public:
 	float ScaleRightValue;
 	float OldScaleRightValue;
 
-	UPROPERTY(EditAnywhere, Category = "Scaling", meta = (DisplayName = "Move Horizontal", Keywords = "Move Horizontal"))
-	float MoveHorizontalValue;
-	float OldMoveHorizontalValue;
-
-	UPROPERTY(EditAnywhere, Category = "Scaling", meta = (DisplayName = "Move Vertical", Keywords = "Move Vertical"))
-	float MoveVerticalValue;
-	float OldMoveVerticalValue;
-
 private:
 	TSharedPtr<UScale> Scale;
 	ULevelSequence * Sequencer = nullptr;
@@ -98,6 +90,11 @@ private:
 
 	float MinValue;
 	float MaxValue;
+
+	float MaxTime;
+	float MinTime;
+
+	bool bWasCaptured = false;
 };
 
 

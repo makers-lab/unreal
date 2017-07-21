@@ -4,44 +4,56 @@
 
 
 
-void UScale::ScaleTop(UMovieScene3DTransformSection * TransformSection, TransformType Type, EAxis::Type Axis, CustomTransform Transform, float MaxValue, float MinValue, float Delta)
+void UScale::ScaleTop(UMovieScene3DTransformSection * TransformSection, TransformType Type, EAxis::Type Axis, CustomTransform Transform, float& MaxValue, float& MinValue, float Delta, TArray<float>& KeysValuesToSort)
 {
 	if (Type == TransformType::Loc)
 	{
 		if (Axis == EAxis::X)
 		{
-			auto& Keys = TransformSection->GetTranslationCurve(Axis).Keys;
-			int32 Num = Transform.Locaion.X.Values.Num();
-			for (int32 Index = 0; Index < Num; Index++)
+			TArray<FKeyHandle> Handles;
+			for (int32 Index = 0; Index < Transform.Locaion.X.Times.Num(); Index++)
 			{
-				float DiffMinNext = Transform.Locaion.X.Values[Index] - MinValue;
+				Handles.Add(TransformSection->GetTranslationCurve(Axis).FindKey(Transform.Locaion.X.Times[Index]));
+			}
+			for (auto& Handle : Handles)
+			{
+				float DiffMinNext = TransformSection->GetTranslationCurve(Axis).GetKeyValue(Handle) - MinValue;
 				float MultiplyDiffMinNext = DiffMinNext * Delta;
 				float ChangedDiffMinNext = MultiplyDiffMinNext + MinValue;
-				Keys[Transform.Locaion.X.Indexes[Index]].Value = ChangedDiffMinNext;
+				TransformSection->GetTranslationCurve(Axis).SetKeyValue(Handle, ChangedDiffMinNext);
+				KeysValuesToSort.Add(TransformSection->GetTranslationCurve(Axis).GetKeyValue(Handle));
 			}
 		}
 		if (Axis == EAxis::Y)
 		{
-			auto& Keys = TransformSection->GetTranslationCurve(Axis).Keys;
-			int32 Num = Transform.Locaion.Y.Values.Num();
-			for (int32 Index = 0; Index < Num; Index++)
+			TArray<FKeyHandle> Handles;
+			for (int32 Index = 0; Index < Transform.Locaion.Y.Times.Num(); Index++)
 			{
-				float DiffMinNext = Transform.Locaion.Y.Values[Index] - MinValue;
+				Handles.Add(TransformSection->GetTranslationCurve(Axis).FindKey(Transform.Locaion.Y.Times[Index]));
+			}
+			for (auto& Handle : Handles)
+			{
+				float DiffMinNext = TransformSection->GetTranslationCurve(Axis).GetKeyValue(Handle) - MinValue;
 				float MultiplyDiffMinNext = DiffMinNext * Delta;
 				float ChangedDiffMinNext = MultiplyDiffMinNext + MinValue;
-				Keys[Transform.Locaion.Y.Indexes[Index]].Value = ChangedDiffMinNext;
+				TransformSection->GetTranslationCurve(Axis).SetKeyValue(Handle, ChangedDiffMinNext);
+				KeysValuesToSort.Add(TransformSection->GetTranslationCurve(Axis).GetKeyValue(Handle));
 			}
 		}
 		if (Axis == EAxis::Z)
 		{
-			auto& Keys = TransformSection->GetTranslationCurve(Axis).Keys;
-			int32 Num = Transform.Locaion.Z.Values.Num();
-			for (int32 Index = 0; Index < Num; Index++)
+			TArray<FKeyHandle> Handles;
+			for (int32 Index = 0; Index < Transform.Locaion.Z.Times.Num(); Index++)
 			{
-				float DiffMinNext = Transform.Locaion.Z.Values[Index] - MinValue;
+				Handles.Add(TransformSection->GetTranslationCurve(Axis).FindKey(Transform.Locaion.Z.Times[Index]));
+			}
+			for (auto& Handle : Handles)
+			{
+				float DiffMinNext = TransformSection->GetTranslationCurve(Axis).GetKeyValue(Handle) - MinValue;
 				float MultiplyDiffMinNext = DiffMinNext * Delta;
 				float ChangedDiffMinNext = MultiplyDiffMinNext + MinValue;
-				Keys[Transform.Locaion.Z.Indexes[Index]].Value = ChangedDiffMinNext;
+				TransformSection->GetTranslationCurve(Axis).SetKeyValue(Handle, ChangedDiffMinNext);
+				KeysValuesToSort.Add(TransformSection->GetTranslationCurve(Axis).GetKeyValue(Handle));
 			}
 		}
 	}
@@ -50,39 +62,52 @@ void UScale::ScaleTop(UMovieScene3DTransformSection * TransformSection, Transfor
 	{
 		if (Axis == EAxis::X)
 		{
-			auto& Keys = TransformSection->GetTranslationCurve(Axis).Keys;
-			int32 Num = Transform.Rotation.X.Values.Num();
-			for (int32 Index = 0; Index < Num; Index++)
+			TArray<FKeyHandle> Handles;
+			for (int32 Index = 0; Index < Transform.Rotation.X.Times.Num(); Index++)
 			{
-				float DiffMinNext = Transform.Rotation.X.Values[Index] - MinValue;
+				Handles.Add(TransformSection->GetRotationCurve(Axis).FindKey(Transform.Rotation.X.Times[Index]));
+			}
+			for (auto& Handle : Handles)
+			{
+				float DiffMinNext = TransformSection->GetRotationCurve(Axis).GetKeyValue(Handle) - MinValue;
 				float MultiplyDiffMinNext = DiffMinNext * Delta;
 				float ChangedDiffMinNext = MultiplyDiffMinNext + MinValue;
-				Keys[Transform.Rotation.X.Indexes[Index]].Value = ChangedDiffMinNext;
+				TransformSection->GetRotationCurve(Axis).SetKeyValue(Handle, ChangedDiffMinNext);
+				KeysValuesToSort.Add(TransformSection->GetRotationCurve(Axis).GetKeyValue(Handle));
 			}
 		}
 		if (Axis == EAxis::Y)
 		{
-			auto& Keys = TransformSection->GetTranslationCurve(Axis).Keys;
-			int32 Num = Transform.Rotation.Y.Values.Num();
-			for (int32 Index = 0; Index < Num; Index++)
+			TArray<FKeyHandle> Handles;
+			for (int32 Index = 0; Index < Transform.Rotation.Y.Times.Num(); Index++)
 			{
-				float DiffMinNext = Transform.Rotation.Y.Values[Index] - MinValue;
+				Handles.Add(TransformSection->GetRotationCurve(Axis).FindKey(Transform.Rotation.Y.Times[Index]));
+			}
+			for (auto& Handle : Handles)
+			{
+				float DiffMinNext = TransformSection->GetRotationCurve(Axis).GetKeyValue(Handle) - MinValue;
 				float MultiplyDiffMinNext = DiffMinNext * Delta;
 				float ChangedDiffMinNext = MultiplyDiffMinNext + MinValue;
-				Keys[Transform.Rotation.Y.Indexes[Index]].Value = ChangedDiffMinNext;
+				TransformSection->GetRotationCurve(Axis).SetKeyValue(Handle, ChangedDiffMinNext);
+				KeysValuesToSort.Add(TransformSection->GetRotationCurve(Axis).GetKeyValue(Handle));
 			}
 		}
 		if (Axis == EAxis::Z)
 		{
-			auto& Keys = TransformSection->GetTranslationCurve(Axis).Keys;
-			int32 Num = Transform.Rotation.Z.Values.Num();
-			for (int32 Index = 0; Index < Num; Index++)
+			TArray<FKeyHandle> Handles;
+			for (int32 Index = 0; Index < Transform.Rotation.Z.Times.Num(); Index++)
 			{
-				float DiffMinNext = Transform.Rotation.Z.Values[Index] - MinValue;
+				Handles.Add(TransformSection->GetRotationCurve(Axis).FindKey(Transform.Rotation.Z.Times[Index]));
+			}
+			for (auto& Handle : Handles)
+			{
+				float DiffMinNext = TransformSection->GetRotationCurve(Axis).GetKeyValue(Handle) - MinValue;
 				float MultiplyDiffMinNext = DiffMinNext * Delta;
 				float ChangedDiffMinNext = MultiplyDiffMinNext + MinValue;
-				Keys[Transform.Rotation.Z.Indexes[Index]].Value = ChangedDiffMinNext;
+				TransformSection->GetRotationCurve(Axis).SetKeyValue(Handle, ChangedDiffMinNext);
+				KeysValuesToSort.Add(TransformSection->GetRotationCurve(Axis).GetKeyValue(Handle));
 			}
+
 		}
 	}
 
@@ -90,81 +115,105 @@ void UScale::ScaleTop(UMovieScene3DTransformSection * TransformSection, Transfor
 	{
 		if (Axis == EAxis::X)
 		{
-			auto& Keys = TransformSection->GetTranslationCurve(Axis).Keys;
-			int32 Num = Transform.Scale.X.Values.Num();
-			for (int32 Index = 0; Index < Num; Index++)
+			TArray<FKeyHandle> Handles;
+			for (int32 Index = 0; Index < Transform.Scale.X.Times.Num(); Index++)
 			{
-				float DiffMinNext = Transform.Scale.X.Values[Index] - MinValue;
+				Handles.Add(TransformSection->GetScaleCurve(Axis).FindKey(Transform.Scale.X.Times[Index]));
+			}
+			for (auto& Handle : Handles)
+			{
+				float DiffMinNext = TransformSection->GetScaleCurve(Axis).GetKeyValue(Handle) - MinValue;
 				float MultiplyDiffMinNext = DiffMinNext * Delta;
 				float ChangedDiffMinNext = MultiplyDiffMinNext + MinValue;
-				Keys[Transform.Scale.X.Indexes[Index]].Value = ChangedDiffMinNext;
+				TransformSection->GetScaleCurve(Axis).SetKeyValue(Handle, ChangedDiffMinNext);
+				KeysValuesToSort.Add(TransformSection->GetScaleCurve(Axis).GetKeyValue(Handle));
 			}
 		}
 		if (Axis == EAxis::Y)
 		{
-			auto& Keys = TransformSection->GetTranslationCurve(Axis).Keys;
-			int32 Num = Transform.Scale.Y.Values.Num();
-			for (int32 Index = 0; Index < Num; Index++)
+			TArray<FKeyHandle> Handles;
+			for (int32 Index = 0; Index < Transform.Scale.Y.Times.Num(); Index++)
 			{
-				float DiffMinNext = Transform.Scale.Y.Values[Index] - MinValue;
+				Handles.Add(TransformSection->GetScaleCurve(Axis).FindKey(Transform.Scale.Y.Times[Index]));
+			}
+			for (auto& Handle : Handles)
+			{
+				float DiffMinNext = TransformSection->GetScaleCurve(Axis).GetKeyValue(Handle) - MinValue;
 				float MultiplyDiffMinNext = DiffMinNext * Delta;
 				float ChangedDiffMinNext = MultiplyDiffMinNext + MinValue;
-				Keys[Transform.Scale.Y.Indexes[Index]].Value = ChangedDiffMinNext;
+				TransformSection->GetScaleCurve(Axis).SetKeyValue(Handle, ChangedDiffMinNext);
+				KeysValuesToSort.Add(TransformSection->GetScaleCurve(Axis).GetKeyValue(Handle));
 			}
 		}
 		if (Axis == EAxis::Z)
 		{
-			auto& Keys = TransformSection->GetTranslationCurve(Axis).Keys;
-			int32 Num = Transform.Scale.Z.Values.Num();
-			for (int32 Index = 0; Index < Num; Index++)
+			TArray<FKeyHandle> Handles;
+			for (int32 Index = 0; Index < Transform.Scale.Y.Times.Num(); Index++)
 			{
-				float DiffMinNext = Transform.Scale.Z.Values[Index] - MinValue;
+				Handles.Add(TransformSection->GetScaleCurve(Axis).FindKey(Transform.Scale.Y.Times[Index]));
+			}
+			for (auto& Handle : Handles)
+			{
+				float DiffMinNext = TransformSection->GetScaleCurve(Axis).GetKeyValue(Handle) - MinValue;
 				float MultiplyDiffMinNext = DiffMinNext * Delta;
 				float ChangedDiffMinNext = MultiplyDiffMinNext + MinValue;
-				Keys[Transform.Scale.Z.Indexes[Index]].Value = ChangedDiffMinNext;
+				TransformSection->GetScaleCurve(Axis).SetKeyValue(Handle, ChangedDiffMinNext);
+				KeysValuesToSort.Add(TransformSection->GetScaleCurve(Axis).GetKeyValue(Handle));
 			}
 		}
 	}
 }
 
-void UScale::ScaleBot(UMovieScene3DTransformSection * TransformSection, TransformType Type, EAxis::Type Axis, CustomTransform Transform, float MaxValue, float MinValue, float Delta)
+void UScale::ScaleBot(UMovieScene3DTransformSection * TransformSection, TransformType Type, EAxis::Type Axis, CustomTransform Transform, float& MaxValue, float& MinValue, float Delta, TArray<float>& KeysValuesToSort)
 {
 	if (Type == TransformType::Loc)
-	{
+	{		
 		if (Axis == EAxis::X)
 		{
-			auto& Keys = TransformSection->GetTranslationCurve(Axis).Keys;
-			int32 Num = Transform.Locaion.X.Values.Num();
-			for (int32 Index = 0; Index < Num; Index++)
+			TArray<FKeyHandle> Handles;
+			for (int32 Index = 0; Index < Transform.Locaion.X.Times.Num(); Index++)
 			{
-				float DiffMaxNext = Transform.Locaion.X.Values[Index] - MaxValue;
-				float MultiplyDiffMaxNext = DiffMaxNext * Delta;
-				float ChangedDiffMaxNext = MultiplyDiffMaxNext + MaxValue;
-				Keys[Transform.Locaion.X.Indexes[Index]].Value = ChangedDiffMaxNext;
+				Handles.Add(TransformSection->GetTranslationCurve(Axis).FindKey(Transform.Locaion.X.Times[Index]));
+			}
+			for (auto& Handle : Handles)
+			{
+				float DiffMaxPrev = TransformSection->GetTranslationCurve(Axis).GetKeyValue(Handle) - MaxValue;
+				float MultiplyDiffMaxPrev = DiffMaxPrev * Delta;
+				float ChangedDiffMaxPrev = MultiplyDiffMaxPrev + MaxValue;
+				TransformSection->GetTranslationCurve(Axis).SetKeyValue(Handle, ChangedDiffMaxPrev);
+				KeysValuesToSort.Add(TransformSection->GetTranslationCurve(Axis).GetKeyValue(Handle));
 			}
 		}
 		if (Axis == EAxis::Y)
 		{
-			auto& Keys = TransformSection->GetTranslationCurve(Axis).Keys;
-			int32 Num = Transform.Locaion.Y.Values.Num();
-			for (int32 Index = 0; Index < Num; Index++)
+			TArray<FKeyHandle> Handles;
+			for (int32 Index = 0; Index < Transform.Locaion.Y.Times.Num(); Index++)
 			{
-				float DiffMaxNext = Transform.Locaion.Y.Values[Index] - MaxValue;
-				float MultiplyDiffMaxNext = DiffMaxNext * Delta;
-				float ChangedDiffMaxNext = MultiplyDiffMaxNext + MaxValue;
-				Keys[Transform.Locaion.Y.Indexes[Index]].Value = ChangedDiffMaxNext;
+				Handles.Add(TransformSection->GetTranslationCurve(Axis).FindKey(Transform.Locaion.Y.Times[Index]));
+			}
+			for (auto& Handle : Handles)
+			{
+				float DiffMaxPrev = TransformSection->GetTranslationCurve(Axis).GetKeyValue(Handle) - MaxValue;
+				float MultiplyDiffMaxPrev = DiffMaxPrev * Delta;
+				float ChangedDiffMaxPrev = MultiplyDiffMaxPrev + MaxValue;
+				TransformSection->GetTranslationCurve(Axis).SetKeyValue(Handle, ChangedDiffMaxPrev);
+				KeysValuesToSort.Add(TransformSection->GetTranslationCurve(Axis).GetKeyValue(Handle));
 			}
 		}
 		if (Axis == EAxis::Z)
 		{
-			auto& Keys = TransformSection->GetTranslationCurve(Axis).Keys;
-			int32 Num = Transform.Locaion.Z.Values.Num();
-			for (int32 Index = 0; Index < Num; Index++)
+			TArray<FKeyHandle> Handles;
+			for (int32 Index = 0; Index < Transform.Locaion.Z.Times.Num(); Index++)
 			{
-				float DiffMaxNext = Transform.Locaion.Z.Values[Index] - MaxValue;
-				float MultiplyDiffMaxNext = DiffMaxNext * Delta;
-				float ChangedDiffMaxNext = MultiplyDiffMaxNext + MaxValue;
-				Keys[Transform.Locaion.Z.Indexes[Index]].Value = ChangedDiffMaxNext;
+				Handles.Add(TransformSection->GetTranslationCurve(Axis).FindKey(Transform.Locaion.Z.Times[Index]));
+			}
+			for (auto& Handle : Handles)
+			{
+				float DiffMaxPrev = TransformSection->GetTranslationCurve(Axis).GetKeyValue(Handle) - MaxValue;
+				float MultiplyDiffMaxPrev = DiffMaxPrev * Delta;
+				float ChangedDiffMaxPrev = MultiplyDiffMaxPrev + MaxValue;
+				TransformSection->GetTranslationCurve(Axis).SetKeyValue(Handle, ChangedDiffMaxPrev);
+				KeysValuesToSort.Add(TransformSection->GetTranslationCurve(Axis).GetKeyValue(Handle));
 			}
 		}
 	}
@@ -173,39 +222,52 @@ void UScale::ScaleBot(UMovieScene3DTransformSection * TransformSection, Transfor
 	{
 		if (Axis == EAxis::X)
 		{
-			auto& Keys = TransformSection->GetTranslationCurve(Axis).Keys;
-			int32 Num = Transform.Rotation.X.Values.Num();
-			for (int32 Index = 0; Index < Num; Index++)
+			TArray<FKeyHandle> Handles;
+			for (int32 Index = 0; Index < Transform.Rotation.X.Times.Num(); Index++)
 			{
-				float DiffMaxNext = Transform.Rotation.X.Values[Index] - MaxValue;
-				float MultiplyDiffMaxNext = DiffMaxNext * Delta;
-				float ChangedDiffMaxNext = MultiplyDiffMaxNext + MaxValue;
-				Keys[Transform.Rotation.X.Indexes[Index]].Value = ChangedDiffMaxNext;
+				Handles.Add(TransformSection->GetRotationCurve(Axis).FindKey(Transform.Rotation.X.Times[Index]));
+			}
+			for (auto& Handle : Handles)
+			{
+				float DiffMaxPrev = TransformSection->GetRotationCurve(Axis).GetKeyValue(Handle) - MaxValue;
+				float MultiplyDiffMaxPrev = DiffMaxPrev * Delta;
+				float ChangedDiffMaxPrev = MultiplyDiffMaxPrev + MaxValue;
+				TransformSection->GetRotationCurve(Axis).SetKeyValue(Handle, ChangedDiffMaxPrev);
+				KeysValuesToSort.Add(TransformSection->GetRotationCurve(Axis).GetKeyValue(Handle));
 			}
 		}
 		if (Axis == EAxis::Y)
 		{
-			auto& Keys = TransformSection->GetTranslationCurve(Axis).Keys;
-			int32 Num = Transform.Rotation.Y.Values.Num();
-			for (int32 Index = 0; Index < Num; Index++)
+			TArray<FKeyHandle> Handles;
+			for (int32 Index = 0; Index < Transform.Rotation.Y.Times.Num(); Index++)
 			{
-				float DiffMaxNext = Transform.Rotation.Y.Values[Index] - MaxValue;
-				float MultiplyDiffMaxNext = DiffMaxNext * Delta;
-				float ChangedDiffMaxNext = MultiplyDiffMaxNext + MaxValue;
-				Keys[Transform.Rotation.Y.Indexes[Index]].Value = ChangedDiffMaxNext;
+				Handles.Add(TransformSection->GetRotationCurve(Axis).FindKey(Transform.Rotation.Y.Times[Index]));
+			}
+			for (auto& Handle : Handles)
+			{
+				float DiffMaxPrev = TransformSection->GetRotationCurve(Axis).GetKeyValue(Handle) - MaxValue;
+				float MultiplyDiffMaxPrev = DiffMaxPrev * Delta;
+				float ChangedDiffMaxPrev = MultiplyDiffMaxPrev + MaxValue;
+				TransformSection->GetRotationCurve(Axis).SetKeyValue(Handle, ChangedDiffMaxPrev);
+				KeysValuesToSort.Add(TransformSection->GetRotationCurve(Axis).GetKeyValue(Handle));
 			}
 		}
 		if (Axis == EAxis::Z)
 		{
-			auto& Keys = TransformSection->GetTranslationCurve(Axis).Keys;
-			int32 Num = Transform.Rotation.Z.Values.Num();
-			for (int32 Index = 0; Index < Num; Index++)
+			TArray<FKeyHandle> Handles;
+			for (int32 Index = 0; Index < Transform.Rotation.Z.Times.Num(); Index++)
 			{
-				float DiffMaxNext = Transform.Rotation.Z.Values[Index] - MaxValue;
-				float MultiplyDiffMaxNext = DiffMaxNext * Delta;
-				float ChangedDiffMaxNext = MultiplyDiffMaxNext + MaxValue;
-				Keys[Transform.Rotation.Z.Indexes[Index]].Value = ChangedDiffMaxNext;
+				Handles.Add(TransformSection->GetRotationCurve(Axis).FindKey(Transform.Rotation.Z.Times[Index]));
 			}
+			for (auto& Handle : Handles)
+			{
+				float DiffMaxPrev = TransformSection->GetRotationCurve(Axis).GetKeyValue(Handle) - MaxValue;
+				float MultiplyDiffMaxPrev = DiffMaxPrev * Delta;
+				float ChangedDiffMaxPrev = MultiplyDiffMaxPrev + MaxValue;
+				TransformSection->GetRotationCurve(Axis).SetKeyValue(Handle, ChangedDiffMaxPrev);
+				KeysValuesToSort.Add(TransformSection->GetRotationCurve(Axis).GetKeyValue(Handle));
+			}
+
 		}
 	}
 
@@ -213,59 +275,438 @@ void UScale::ScaleBot(UMovieScene3DTransformSection * TransformSection, Transfor
 	{
 		if (Axis == EAxis::X)
 		{
-			auto& Keys = TransformSection->GetTranslationCurve(Axis).Keys;
-			int32 Num = Transform.Scale.X.Values.Num();
-			for (int32 Index = 0; Index < Num; Index++)
+			TArray<FKeyHandle> Handles;
+			for (int32 Index = 0; Index < Transform.Scale.X.Times.Num(); Index++)
 			{
-				float DiffMaxNext = Transform.Scale.X.Values[Index] - MaxValue;
-				float MultiplyDiffMaxNext = DiffMaxNext * Delta;
-				float ChangedDiffMaxNext = MultiplyDiffMaxNext + MaxValue;
-				Keys[Transform.Scale.X.Indexes[Index]].Value = ChangedDiffMaxNext;
+				Handles.Add(TransformSection->GetScaleCurve(Axis).FindKey(Transform.Scale.X.Times[Index]));
+			}
+			for (auto& Handle : Handles)
+			{
+				float DiffMaxPrev = TransformSection->GetScaleCurve(Axis).GetKeyValue(Handle) - MaxValue;
+				float MultiplyDiffMaxPrev = DiffMaxPrev * Delta;
+				float ChangedDiffMaxPrev = MultiplyDiffMaxPrev + MaxValue;
+				TransformSection->GetScaleCurve(Axis).SetKeyValue(Handle, ChangedDiffMaxPrev);
+				KeysValuesToSort.Add(TransformSection->GetScaleCurve(Axis).GetKeyValue(Handle));
 			}
 		}
 		if (Axis == EAxis::Y)
 		{
-			auto& Keys = TransformSection->GetTranslationCurve(Axis).Keys;
-			int32 Num = Transform.Scale.Y.Values.Num();
-			for (int32 Index = 0; Index < Num; Index++)
+			TArray<FKeyHandle> Handles;
+			for (int32 Index = 0; Index < Transform.Scale.Y.Times.Num(); Index++)
 			{
-				float DiffMaxNext = Transform.Scale.Y.Values[Index] - MaxValue;
-				float MultiplyDiffMaxNext = DiffMaxNext * Delta;
-				float ChangedDiffMaxNext = MultiplyDiffMaxNext + MaxValue;
-				Keys[Transform.Scale.Y.Indexes[Index]].Value = ChangedDiffMaxNext;
+				Handles.Add(TransformSection->GetScaleCurve(Axis).FindKey(Transform.Scale.Y.Times[Index]));
+			}
+			for (auto& Handle : Handles)
+			{
+				float DiffMaxPrev = TransformSection->GetScaleCurve(Axis).GetKeyValue(Handle) - MaxValue;
+				float MultiplyDiffMaxPrev = DiffMaxPrev * Delta;
+				float ChangedDiffMaxPrev = MultiplyDiffMaxPrev + MaxValue;
+				TransformSection->GetScaleCurve(Axis).SetKeyValue(Handle, ChangedDiffMaxPrev);
+				KeysValuesToSort.Add(TransformSection->GetScaleCurve(Axis).GetKeyValue(Handle));
 			}
 		}
 		if (Axis == EAxis::Z)
 		{
-			auto& Keys = TransformSection->GetTranslationCurve(Axis).Keys;
-			int32 Num = Transform.Scale.Z.Values.Num();
-			for (int32 Index = 0; Index < Num; Index++)
+			TArray<FKeyHandle> Handles;
+			for (int32 Index = 0; Index < Transform.Scale.Y.Times.Num(); Index++)
 			{
-				float DiffMaxNext = Transform.Scale.Z.Values[Index] - MaxValue;
-				float MultiplyDiffMaxNext = DiffMaxNext * Delta;
-				float ChangedDiffMaxNext = MultiplyDiffMaxNext + MaxValue;
-				Keys[Transform.Scale.Z.Indexes[Index]].Value = ChangedDiffMaxNext;
+				Handles.Add(TransformSection->GetScaleCurve(Axis).FindKey(Transform.Scale.Y.Times[Index]));
+			}
+			for (auto& Handle : Handles)
+			{
+				float DiffMaxPrev = TransformSection->GetScaleCurve(Axis).GetKeyValue(Handle) - MaxValue;
+				float MultiplyDiffMaxPrev = DiffMaxPrev * Delta;
+				float ChangedDiffMaxPrev = MultiplyDiffMaxPrev + MaxValue;
+				TransformSection->GetScaleCurve(Axis).SetKeyValue(Handle, ChangedDiffMaxPrev);
+				KeysValuesToSort.Add(TransformSection->GetScaleCurve(Axis).GetKeyValue(Handle));
 			}
 		}
 	}
 }
 
-void UScale::ScaleLeft(UMovieScene3DTransformSection * TransformSection, TMap<EAxis::Type, TArray<float>>& ValuesToEdit, float MaxValue, float MinValue, float Delta, bool bScaleCapturedOnly)
+void UScale::ScaleLeft(UMovieScene3DTransformSection * TransformSection, TransformType Type, EAxis::Type Axis, CustomTransform& Transform, float& MaxTime, float& MinTime, float Delta, TArray<float>& KeysTimesToSort, bool bScaleCapturedOnly)
 {
-	
+	if (Type == TransformType::Loc)
+	{
+		if (Axis == EAxis::X)
+		{
+			TArray<FKeyHandle> Handles;
+			for (int32 Index = 0; Index < Transform.Locaion.X.Times.Num(); Index++)
+			{
+				Handles.Add(TransformSection->GetTranslationCurve(Axis).FindKey(Transform.Locaion.X.Times[Index]));
+			}
+
+			float OldTime = TransformSection->GetTranslationCurve(Axis).GetKeyTime(Handles[0]);
+			int32 Index = 0;
+			for (auto& Handle : Handles)
+			{
+				float DiffMaxPrev = TransformSection->GetTranslationCurve(Axis).GetKeyTime(Handle) - MaxTime;
+				float MultiplyDiffMaxPrev = DiffMaxPrev * Delta;
+				float ChangedDiffMaxPrev = MultiplyDiffMaxPrev + MaxTime;
+				TransformSection->GetTranslationCurve(Axis).SetKeyTime(Handle, ChangedDiffMaxPrev);
+				KeysTimesToSort.Add(TransformSection->GetTranslationCurve(Axis).GetKeyTime(Handle));
+				Transform.Locaion.X.Times[Index++] = TransformSection->GetTranslationCurve(Axis).GetKeyTime(Handle);
+			}
+			float CurrTime = TransformSection->GetTranslationCurve(Axis).GetKeyTime(Handles[0]);
+
+			if (!bScaleCapturedOnly)
+			{
+				TArray<FKeyHandle> HandlesOutOfRange;
+				for (int32 Index = 0; Index < Transform.Locaion.X.Indexes[0]; Index++)
+				{
+					HandlesOutOfRange.Add(TransformSection->GetTranslationCurve(Axis).FindKey(TransformSection->GetTranslationCurve(Axis).Keys[Index].Time));
+				}
+				for (auto& Handle : HandlesOutOfRange)
+				{
+					float Time = TransformSection->GetTranslationCurve(Axis).GetKeyTime(Handle);
+					TransformSection->GetTranslationCurve(Axis).SetKeyTime(Handle, Time - (OldTime - CurrTime));
+				}
+			}
+		}
+		if (Axis == EAxis::Y)
+		{
+			TArray<FKeyHandle> Handles;
+			for (int32 Index = 0; Index < Transform.Locaion.Y.Times.Num(); Index++)
+			{
+				Handles.Add(TransformSection->GetTranslationCurve(Axis).FindKey(Transform.Locaion.Y.Times[Index]));
+			}
+			int32 Index = 0;
+			for (auto& Handle : Handles)
+			{
+				float DiffMaxPrev = TransformSection->GetTranslationCurve(Axis).GetKeyTime(Handle) - MaxTime;
+				float MultiplyDiffMaxPrev = DiffMaxPrev * Delta;
+				float ChangedDiffMaxPrev = MultiplyDiffMaxPrev + MaxTime;
+				TransformSection->GetTranslationCurve(Axis).SetKeyTime(Handle, ChangedDiffMaxPrev);
+				KeysTimesToSort.Add(TransformSection->GetTranslationCurve(Axis).GetKeyTime(Handle));
+				Transform.Locaion.Y.Times[Index++] = TransformSection->GetTranslationCurve(Axis).GetKeyTime(Handle);
+			}
+		}
+		if (Axis == EAxis::Z)
+		{
+			TArray<FKeyHandle> Handles;
+			for (int32 Index = 0; Index < Transform.Locaion.Z.Times.Num(); Index++)
+			{
+				Handles.Add(TransformSection->GetTranslationCurve(Axis).FindKey(Transform.Locaion.Z.Times[Index]));
+			}
+			int32 Index = 0;
+			for (auto& Handle : Handles)
+			{
+				float DiffMaxPrev = TransformSection->GetTranslationCurve(Axis).GetKeyTime(Handle) - MaxTime;
+				float MultiplyDiffMaxPrev = DiffMaxPrev * Delta;
+				float ChangedDiffMaxPrev = MultiplyDiffMaxPrev + MaxTime;
+				TransformSection->GetTranslationCurve(Axis).SetKeyTime(Handle, ChangedDiffMaxPrev);
+				KeysTimesToSort.Add(TransformSection->GetTranslationCurve(Axis).GetKeyTime(Handle));
+				Transform.Locaion.Z.Times[Index++] = TransformSection->GetTranslationCurve(Axis).GetKeyTime(Handle);
+			}
+		}
+	}
+
+	if (Type == TransformType::Rot)
+	{
+		if (Axis == EAxis::X)
+		{
+			TArray<FKeyHandle> Handles;
+			for (int32 Index = 0; Index < Transform.Rotation.X.Times.Num(); Index++)
+			{
+				Handles.Add(TransformSection->GetRotationCurve(Axis).FindKey(Transform.Rotation.X.Times[Index]));
+			}
+
+			int32 Index = 0;
+			for (auto& Handle : Handles)
+			{
+				float DiffMaxPrev = TransformSection->GetRotationCurve(Axis).GetKeyTime(Handle) - MaxTime;
+				float MultiplyDiffMaxPrev = DiffMaxPrev * Delta;
+				float ChangedDiffMaxPrev = MultiplyDiffMaxPrev + MaxTime;
+				TransformSection->GetRotationCurve(Axis).SetKeyTime(Handle, ChangedDiffMaxPrev);
+				KeysTimesToSort.Add(TransformSection->GetRotationCurve(Axis).GetKeyTime(Handle));
+				Transform.Rotation.X.Times[Index++] = TransformSection->GetRotationCurve(Axis).GetKeyTime(Handle);
+			}
+		}
+		if (Axis == EAxis::Y)
+		{
+			TArray<FKeyHandle> Handles;
+			for (int32 Index = 0; Index < Transform.Rotation.Y.Times.Num(); Index++)
+			{
+				Handles.Add(TransformSection->GetRotationCurve(Axis).FindKey(Transform.Rotation.Y.Times[Index]));
+			}
+
+			int32 Index = 0;
+			for (auto& Handle : Handles)
+			{
+				float DiffMaxPrev = TransformSection->GetRotationCurve(Axis).GetKeyTime(Handle) - MaxTime;
+				float MultiplyDiffMaxPrev = DiffMaxPrev * Delta;
+				float ChangedDiffMaxPrev = MultiplyDiffMaxPrev + MaxTime;
+				TransformSection->GetRotationCurve(Axis).SetKeyTime(Handle, ChangedDiffMaxPrev);
+				KeysTimesToSort.Add(TransformSection->GetRotationCurve(Axis).GetKeyTime(Handle));
+				Transform.Rotation.Y.Times[Index++] = TransformSection->GetRotationCurve(Axis).GetKeyTime(Handle);
+			}
+		}
+		if (Axis == EAxis::Z)
+		{
+			TArray<FKeyHandle> Handles;
+			for (int32 Index = 0; Index < Transform.Rotation.Z.Times.Num(); Index++)
+			{
+				Handles.Add(TransformSection->GetRotationCurve(Axis).FindKey(Transform.Rotation.Z.Times[Index]));
+			}
+
+			int32 Index = 0;
+			for (auto& Handle : Handles)
+			{
+				float DiffMaxPrev = TransformSection->GetRotationCurve(Axis).GetKeyTime(Handle) - MaxTime;
+				float MultiplyDiffMaxPrev = DiffMaxPrev * Delta;
+				float ChangedDiffMaxPrev = MultiplyDiffMaxPrev + MaxTime;
+				TransformSection->GetRotationCurve(Axis).SetKeyTime(Handle, ChangedDiffMaxPrev);
+				KeysTimesToSort.Add(TransformSection->GetRotationCurve(Axis).GetKeyTime(Handle));
+				Transform.Rotation.Z.Times[Index++] = TransformSection->GetRotationCurve(Axis).GetKeyTime(Handle);
+			}
+
+		}
+	}
+
+	if (Type == TransformType::Sca)
+	{
+		if (Axis == EAxis::X)
+		{
+			TArray<FKeyHandle> Handles;
+			for (int32 Index = 0; Index < Transform.Scale.X.Times.Num(); Index++)
+			{
+				Handles.Add(TransformSection->GetScaleCurve(Axis).FindKey(Transform.Scale.X.Times[Index]));
+			}
+
+			int32 Index = 0;
+			for (auto& Handle : Handles)
+			{
+				float DiffMaxPrev = TransformSection->GetScaleCurve(Axis).GetKeyTime(Handle) - MaxTime;
+				float MultiplyDiffMaxPrev = DiffMaxPrev * Delta;
+				float ChangedDiffMaxPrev = MultiplyDiffMaxPrev + MaxTime;
+				TransformSection->GetScaleCurve(Axis).SetKeyTime(Handle, ChangedDiffMaxPrev);
+				KeysTimesToSort.Add(TransformSection->GetScaleCurve(Axis).GetKeyTime(Handle));
+				Transform.Scale.X.Times[Index++] = TransformSection->GetScaleCurve(Axis).GetKeyTime(Handle);
+			}
+		}
+		if (Axis == EAxis::Y)
+		{
+			TArray<FKeyHandle> Handles;
+			for (int32 Index = 0; Index < Transform.Scale.Y.Times.Num(); Index++)
+			{
+				Handles.Add(TransformSection->GetScaleCurve(Axis).FindKey(Transform.Scale.Y.Times[Index]));
+			}
+
+			int32 Index = 0;
+			for (auto& Handle : Handles)
+			{
+				float DiffMaxPrev = TransformSection->GetScaleCurve(Axis).GetKeyTime(Handle) - MaxTime;
+				float MultiplyDiffMaxPrev = DiffMaxPrev * Delta;
+				float ChangedDiffMaxPrev = MultiplyDiffMaxPrev + MaxTime;
+				TransformSection->GetScaleCurve(Axis).SetKeyTime(Handle, ChangedDiffMaxPrev);
+				KeysTimesToSort.Add(TransformSection->GetScaleCurve(Axis).GetKeyTime(Handle));
+				Transform.Scale.Y.Times[Index++] = TransformSection->GetScaleCurve(Axis).GetKeyTime(Handle);
+			}
+		}
+		if (Axis == EAxis::Z)
+		{
+			TArray<FKeyHandle> Handles;
+			for (int32 Index = 0; Index < Transform.Scale.Y.Times.Num(); Index++)
+			{
+				Handles.Add(TransformSection->GetScaleCurve(Axis).FindKey(Transform.Scale.Y.Times[Index]));
+			}
+
+			int32 Index = 0;
+			for (auto& Handle : Handles)
+			{
+				float DiffMaxPrev = TransformSection->GetScaleCurve(Axis).GetKeyTime(Handle) - MaxTime;
+				float MultiplyDiffMaxPrev = DiffMaxPrev * Delta;
+				float ChangedDiffMaxPrev = MultiplyDiffMaxPrev + MaxTime;
+				TransformSection->GetScaleCurve(Axis).SetKeyTime(Handle, ChangedDiffMaxPrev);
+				KeysTimesToSort.Add(TransformSection->GetScaleCurve(Axis).GetKeyTime(Handle));
+				Transform.Scale.Z.Times[Index++] = TransformSection->GetScaleCurve(Axis).GetKeyTime(Handle);
+			}
+		}
+	}
 }
 
-void UScale::ScaleRight(UMovieScene3DTransformSection * TransformSection, TMap<EAxis::Type, TArray<float>>& ValuesToEdit, float MaxValue, float MinValue, float Delta, bool bScaleCapturedOnly)
+void UScale::ScaleRight(UMovieScene3DTransformSection * TransformSection, TransformType Type, EAxis::Type Axis, CustomTransform& Transform, float& MaxTime, float& MinTime, float Delta, TArray<float>& KeysTimesToSort, bool bScaleCapturedOnly)
 {
-	
+	if (Type == TransformType::Loc)
+	{
+		if (Axis == EAxis::X)
+		{
+			TArray<FKeyHandle> Handles;
+			for (int32 Index = 0; Index < Transform.Locaion.X.Times.Num(); Index++)
+			{
+				Handles.Add(TransformSection->GetTranslationCurve(Axis).FindKey(Transform.Locaion.X.Times[Index]));
+			}
+
+			int32 Index = 0;
+			for (auto& Handle : Handles)
+			{
+				float DiffMinNext = TransformSection->GetTranslationCurve(Axis).GetKeyTime(Handle) - MinTime;
+				float MultiplyDiffMinNext = DiffMinNext * Delta;
+				float ChangedDiffMinNext = MultiplyDiffMinNext + MinTime;
+				TransformSection->GetTranslationCurve(Axis).SetKeyTime(Handle, ChangedDiffMinNext);
+				KeysTimesToSort.Add(TransformSection->GetTranslationCurve(Axis).GetKeyTime(Handle));
+				Transform.Locaion.X.Times[Index++] = TransformSection->GetTranslationCurve(Axis).GetKeyTime(Handle);
+			}
+		}
+		if (Axis == EAxis::Y)
+		{
+			TArray<FKeyHandle> Handles;
+			for (int32 Index = 0; Index < Transform.Locaion.Y.Times.Num(); Index++)
+			{
+				Handles.Add(TransformSection->GetTranslationCurve(Axis).FindKey(Transform.Locaion.Y.Times[Index]));
+			}
+			int32 Index = 0;
+			for (auto& Handle : Handles)
+			{
+				float DiffMinNext = TransformSection->GetTranslationCurve(Axis).GetKeyTime(Handle) - MinTime;
+				float MultiplyDiffMinNext = DiffMinNext * Delta;
+				float ChangedDiffMinNext = MultiplyDiffMinNext + MinTime;
+				TransformSection->GetTranslationCurve(Axis).SetKeyTime(Handle, ChangedDiffMinNext);
+				KeysTimesToSort.Add(TransformSection->GetTranslationCurve(Axis).GetKeyTime(Handle));
+				Transform.Locaion.Y.Times[Index++] = TransformSection->GetTranslationCurve(Axis).GetKeyTime(Handle);
+			}
+		}
+		if (Axis == EAxis::Z)
+		{
+			TArray<FKeyHandle> Handles;
+			for (int32 Index = 0; Index < Transform.Locaion.Z.Times.Num(); Index++)
+			{
+				Handles.Add(TransformSection->GetTranslationCurve(Axis).FindKey(Transform.Locaion.Z.Times[Index]));
+			}
+			int32 Index = 0;
+			for (auto& Handle : Handles)
+			{
+				float DiffMinNext = TransformSection->GetTranslationCurve(Axis).GetKeyTime(Handle) - MinTime;
+				float MultiplyDiffMinNext = DiffMinNext * Delta;
+				float ChangedDiffMinNext = MultiplyDiffMinNext + MinTime;
+				TransformSection->GetTranslationCurve(Axis).SetKeyTime(Handle, ChangedDiffMinNext);
+				KeysTimesToSort.Add(TransformSection->GetTranslationCurve(Axis).GetKeyTime(Handle));
+				Transform.Locaion.Z.Times[Index++] = TransformSection->GetTranslationCurve(Axis).GetKeyTime(Handle);
+			}
+		}
+	}
+
+	if (Type == TransformType::Rot)
+	{
+		if (Axis == EAxis::X)
+		{
+			TArray<FKeyHandle> Handles;
+			for (int32 Index = 0; Index < Transform.Rotation.X.Times.Num(); Index++)
+			{
+				Handles.Add(TransformSection->GetRotationCurve(Axis).FindKey(Transform.Rotation.X.Times[Index]));
+			}
+
+			int32 Index = 0;
+			for (auto& Handle : Handles)
+			{
+				float DiffMinNext = TransformSection->GetRotationCurve(Axis).GetKeyTime(Handle) - MinTime;
+				float MultiplyDiffMinNext = DiffMinNext * Delta;
+				float ChangedDiffMinNext = MultiplyDiffMinNext + MinTime;
+				TransformSection->GetRotationCurve(Axis).SetKeyTime(Handle, ChangedDiffMinNext);
+				KeysTimesToSort.Add(TransformSection->GetRotationCurve(Axis).GetKeyTime(Handle));
+				Transform.Rotation.X.Times[Index++] = TransformSection->GetRotationCurve(Axis).GetKeyTime(Handle);
+			}
+		}
+		if (Axis == EAxis::Y)
+		{
+			TArray<FKeyHandle> Handles;
+			for (int32 Index = 0; Index < Transform.Rotation.Y.Times.Num(); Index++)
+			{
+				Handles.Add(TransformSection->GetRotationCurve(Axis).FindKey(Transform.Rotation.Y.Times[Index]));
+			}
+
+			int32 Index = 0;
+			for (auto& Handle : Handles)
+			{
+				float DiffMinNext = TransformSection->GetRotationCurve(Axis).GetKeyTime(Handle) - MinTime;
+				float MultiplyDiffMinNext = DiffMinNext * Delta;
+				float ChangedDiffMinNext = MultiplyDiffMinNext + MinTime;
+				TransformSection->GetRotationCurve(Axis).SetKeyTime(Handle, ChangedDiffMinNext);
+				KeysTimesToSort.Add(TransformSection->GetRotationCurve(Axis).GetKeyTime(Handle));
+				Transform.Rotation.Y.Times[Index++] = TransformSection->GetRotationCurve(Axis).GetKeyTime(Handle);
+			}
+		}
+		if (Axis == EAxis::Z)
+		{
+			TArray<FKeyHandle> Handles;
+			for (int32 Index = 0; Index < Transform.Rotation.Z.Times.Num(); Index++)
+			{
+				Handles.Add(TransformSection->GetRotationCurve(Axis).FindKey(Transform.Rotation.Z.Times[Index]));
+			}
+
+			int32 Index = 0;
+			for (auto& Handle : Handles)
+			{
+				float DiffMinNext = TransformSection->GetRotationCurve(Axis).GetKeyTime(Handle) - MinTime;
+				float MultiplyDiffMinNext = DiffMinNext * Delta;
+				float ChangedDiffMinNext = MultiplyDiffMinNext + MinTime;
+				TransformSection->GetRotationCurve(Axis).SetKeyTime(Handle, ChangedDiffMinNext);
+				KeysTimesToSort.Add(TransformSection->GetRotationCurve(Axis).GetKeyTime(Handle));
+				Transform.Rotation.Z.Times[Index++] = TransformSection->GetRotationCurve(Axis).GetKeyTime(Handle);
+			}
+
+		}
+	}
+
+	if (Type == TransformType::Sca)
+	{
+		if (Axis == EAxis::X)
+		{
+			TArray<FKeyHandle> Handles;
+			for (int32 Index = 0; Index < Transform.Scale.X.Times.Num(); Index++)
+			{
+				Handles.Add(TransformSection->GetScaleCurve(Axis).FindKey(Transform.Scale.X.Times[Index]));
+			}
+
+			int32 Index = 0;
+			for (auto& Handle : Handles)
+			{
+				float DiffMinNext = TransformSection->GetScaleCurve(Axis).GetKeyTime(Handle) - MinTime;
+				float MultiplyDiffMinNext = DiffMinNext * Delta;
+				float ChangedDiffMinNext = MultiplyDiffMinNext + MinTime;
+				TransformSection->GetScaleCurve(Axis).SetKeyTime(Handle, ChangedDiffMinNext);
+				KeysTimesToSort.Add(TransformSection->GetScaleCurve(Axis).GetKeyTime(Handle));
+				Transform.Scale.X.Times[Index++] = TransformSection->GetScaleCurve(Axis).GetKeyTime(Handle);
+			}
+		}
+		if (Axis == EAxis::Y)
+		{
+			TArray<FKeyHandle> Handles;
+			for (int32 Index = 0; Index < Transform.Scale.Y.Times.Num(); Index++)
+			{
+				Handles.Add(TransformSection->GetScaleCurve(Axis).FindKey(Transform.Scale.Y.Times[Index]));
+			}
+
+			int32 Index = 0;
+			for (auto& Handle : Handles)
+			{
+				float DiffMinNext = TransformSection->GetScaleCurve(Axis).GetKeyTime(Handle) - MinTime;
+				float MultiplyDiffMinNext = DiffMinNext * Delta;
+				float ChangedDiffMinNext = MultiplyDiffMinNext + MinTime;
+				TransformSection->GetScaleCurve(Axis).SetKeyTime(Handle, ChangedDiffMinNext);
+				KeysTimesToSort.Add(TransformSection->GetScaleCurve(Axis).GetKeyTime(Handle));
+				Transform.Scale.Y.Times[Index++] = TransformSection->GetScaleCurve(Axis).GetKeyTime(Handle);
+			}
+		}
+		if (Axis == EAxis::Z)
+		{
+			TArray<FKeyHandle> Handles;
+			for (int32 Index = 0; Index < Transform.Scale.Y.Times.Num(); Index++)
+			{
+				Handles.Add(TransformSection->GetScaleCurve(Axis).FindKey(Transform.Scale.Y.Times[Index]));
+			}
+
+			int32 Index = 0;
+			for (auto& Handle : Handles)
+			{
+				float DiffMinNext = TransformSection->GetScaleCurve(Axis).GetKeyTime(Handle) - MinTime;
+				float MultiplyDiffMinNext = DiffMinNext * Delta;
+				float ChangedDiffMinNext = MultiplyDiffMinNext + MinTime;
+				TransformSection->GetScaleCurve(Axis).SetKeyTime(Handle, ChangedDiffMinNext);
+				KeysTimesToSort.Add(TransformSection->GetScaleCurve(Axis).GetKeyTime(Handle));
+				Transform.Scale.Z.Times[Index++] = TransformSection->GetScaleCurve(Axis).GetKeyTime(Handle);
+			}
+		}
+	}
 }
 
-void UScale::MoveHorizontal(UMovieScene3DTransformSection * TransformSection, TMap<EAxis::Type, TArray<float>>& ValuesToEdit, TMap<EAxis::Type, TArray<float>>& TimesToEdit, float Delta)
-{
-
-}
-
-void UScale::MoveVertical(UMovieScene3DTransformSection * TransformSection, TMap<EAxis::Type, TArray<float>>& ValuesToEdit, TMap<EAxis::Type, TArray<float>>& TimesToEdit, float Delta)
-{
-	
-}

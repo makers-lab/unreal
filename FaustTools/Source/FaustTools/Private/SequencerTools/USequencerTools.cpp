@@ -14,10 +14,6 @@ USequencerTools::USequencerTools()
 	OldScaleLeftValue = ScaleLeftValue;
 	ScaleRightValue = 1.f;
 	OldScaleRightValue = ScaleRightValue;
-	MoveHorizontalValue = 1.f;
-	OldMoveHorizontalValue = MoveHorizontalValue;
-	MoveVerticalValue = 1.f;
-	OldMoveVerticalValue = MoveVerticalValue;
 	Scale = MakeShared<UScale>();
 }
 
@@ -44,50 +40,86 @@ void USequencerTools::PostEditChangeProperty(FPropertyChangedEvent& PropertyChan
 		{
 			bScaleCapturedRange = bScaleCapturedRange;
 		}
+
 		if (PropertyThatChanged->GetName() == "ScaleTopValue")
 		{
+			float Delta = ScaleTopValue / OldScaleTopValue;
+			TArray<float> UnsortedValues;
 			for (auto Type : TransformTypes)
 			{
 				for (auto Axis : Axises)
 				{
-					Scale->ScaleTop(TransformSection, Type, Axis, TransformToEdit, MaxValue, MinValue, ScaleTopValue);
+					Scale->ScaleTop(TransformSection, Type, Axis, TransformToEdit, MaxValue, MinValue, Delta, UnsortedValues);
 				}
+			}
+			if(UnsortedValues.Num())
+			{
+				UnsortedValues.Sort();
+				MaxValue = UnsortedValues[UnsortedValues.Num() - 1];
+				OldScaleTopValue = ScaleTopValue;
 			}
 		}
 		if (PropertyThatChanged->GetName() == "ScaleBotValue")
 		{
+			TArray<float> UnsortedValues;
+			float Delta = ScaleBotValue / OldScaleBotValue;
 			for (auto Type : TransformTypes)
 			{
 				for (auto Axis : Axises)
 				{
-					Scale->ScaleBot(TransformSection, Type, Axis, TransformToEdit, MaxValue, MinValue, ScaleBotValue);
+					Scale->ScaleBot(TransformSection, Type, Axis, TransformToEdit, MaxValue, MinValue, Delta, UnsortedValues);
 				}
+			}
+			if(UnsortedValues.Num())
+			{
+				UnsortedValues.Sort();
+				MinValue = UnsortedValues[0];
+				OldScaleBotValue = ScaleBotValue;
 			}
 		}
 		if (PropertyThatChanged->GetName() == "ScaleLeftValue")
 		{
-			float Delta = OldScaleLeftValue - ScaleLeftValue;
-			//Scale->ScaleLeft(TransformSection, CurvesTimesToEdit, MaxValue, MinValue, Delta, bScaleCapturedRange);
-			OldScaleLeftValue = ScaleLeftValue;
+			TArray<float> UnsortedTimes;
+			float Delta = ScaleLeftValue / OldScaleLeftValue;
+			if(TransformTypes.Num())
+			{
+				for (auto Type : TransformTypes)
+				{
+					for (auto Axis : Axises)
+					{
+						Scale->ScaleLeft(TransformSection, Type, Axis, TransformToEdit, MaxTime, MinTime, Delta, UnsortedTimes, bScaleCapturedRange);
+					}
+				}
+
+				if (UnsortedTimes.Num())
+				{
+					UnsortedTimes.Sort();
+					MinValue = UnsortedTimes[0];
+					OldScaleLeftValue = ScaleLeftValue;
+				}
+			}
 		}
 		if (PropertyThatChanged->GetName() == "ScaleRightValue")
 		{
-			float Delta = OldScaleRightValue - ScaleRightValue;
-			//Scale->ScaleRight(TransformSection, CurvesTimesToEdit, MaxValue, MinValue, Delta, bScaleCapturedRange);
-			OldScaleRightValue = ScaleRightValue;
-		}
+			TArray<float> UnsortedTimes;
+			float Delta = ScaleRightValue / OldScaleRightValue;
+			if (TransformTypes.Num())
+			{
+				for (auto Type : TransformTypes)
+				{
+					for (auto Axis : Axises)
+					{
+						Scale->ScaleRight(TransformSection, Type, Axis, TransformToEdit, MaxTime, MinTime, Delta, UnsortedTimes, bScaleCapturedRange);
+					}
+				}
 
-		if (PropertyThatChanged->GetName() == "MoveHorizontalValue")
-		{
-			float Delta = OldMoveHorizontalValue - MoveHorizontalValue;
-			//Scale->MoveHorizontal(TransformSection, CurvesValuesToEdit, CurvesTimesToEdit, Delta);
-			OldMoveHorizontalValue = MoveHorizontalValue;
-		}
-		if (PropertyThatChanged->GetName() == "MoveVerticalValue")
-		{
-			float Delta = OldMoveVerticalValue - MoveVerticalValue;
-			//Scale->MoveVertical(TransformSection, CurvesValuesToEdit, CurvesTimesToEdit, Delta);
-			OldMoveVerticalValue = MoveVerticalValue;
+				if (UnsortedTimes.Num())
+				{
+					UnsortedTimes.Sort();
+					MinValue = UnsortedTimes[UnsortedTimes.Num() - 1];
+					OldScaleRightValue = ScaleRightValue;
+				}
+			}
 		}
 	}
 	Super::PostEditChangeProperty(PropertyChangedEvent);
@@ -100,7 +132,7 @@ void USequencerTools::OnToolClosed()
 
 void USequencerTools::CaptureRange()
 {
-	ResetCapture();
+	TransformToEdit.Reset();
 	Sequencer = Cast<ULevelSequence>(USupport::GetAssetWithOpenedEditor(ULevelSequence::StaticClass()));
 	if (Sequencer->IsValidLowLevel())
 	{
@@ -117,17 +149,20 @@ void USequencerTools::CaptureRange()
 
 					TransformSection->TryModify();
 					float Step = Sequencer->GetMovieScene()->GetFixedFrameInterval();
-					float MaxTime = TransformSection->GetEndTime() + Step;
-					float Frames = FMath::RoundToFloat(MaxTime / Step);
+					float LastTime = TransformSection->GetEndTime() + Step;
+					float Frames = FMath::RoundToFloat(LastTime / Step);
 					
 					float P1 = FromFrame / Frames * 100;
-					float FromTime = MaxTime / 100 * P1;
+					float FromTime = LastTime / 100 * P1;
  
 					float P2 = ToFrame / Frames * 100;
-					float ToTime = MaxTime / 100 * P2;
+					float ToTime = LastTime / 100 * P2;
 					
 					GetTransformAndCurves(TransformTypes, Axises);
 					
+					TArray <float> UnsortedValues;
+					TArray <float> UnsortedTimes;
+
 					if (Location)
 					{
 						if (X)
@@ -138,6 +173,8 @@ void USequencerTools::CaptureRange()
 								TransformToEdit.Locaion.X.Values,
 								TransformToEdit.Locaion.X.Times,
 								TransformToEdit.Locaion.X.Indexes);
+							UnsortedValues += TransformToEdit.Locaion.X.Values;
+							UnsortedTimes += TransformToEdit.Locaion.X.Times;
 						}
 						if (Y)
 						{
@@ -147,6 +184,8 @@ void USequencerTools::CaptureRange()
 								TransformToEdit.Locaion.Y.Values,
 								TransformToEdit.Locaion.Y.Times,
 								TransformToEdit.Locaion.Y.Indexes);
+							UnsortedValues += TransformToEdit.Locaion.Y.Values;
+							UnsortedTimes += TransformToEdit.Locaion.Y.Times;
 						}
 						if (Z)
 						{
@@ -156,6 +195,8 @@ void USequencerTools::CaptureRange()
 								TransformToEdit.Locaion.Z.Values,
 								TransformToEdit.Locaion.Z.Times,
 								TransformToEdit.Locaion.Z.Indexes);
+							UnsortedValues += TransformToEdit.Locaion.Z.Values;
+							UnsortedTimes += TransformToEdit.Locaion.Z.Times;
 						}
 					}
 
@@ -169,6 +210,8 @@ void USequencerTools::CaptureRange()
 								TransformToEdit.Rotation.X.Values,
 								TransformToEdit.Rotation.X.Times,
 								TransformToEdit.Rotation.X.Indexes);
+							UnsortedValues += TransformToEdit.Rotation.X.Values;
+							UnsortedTimes += TransformToEdit.Rotation.X.Times;
 						}
 						if (Y)
 						{
@@ -178,6 +221,8 @@ void USequencerTools::CaptureRange()
 								TransformToEdit.Rotation.Y.Values,
 								TransformToEdit.Rotation.Y.Times,
 								TransformToEdit.Rotation.Y.Indexes);
+							UnsortedValues += TransformToEdit.Rotation.Y.Values;
+							UnsortedTimes += TransformToEdit.Rotation.Y.Times;
 						}
 						if (Z)
 						{
@@ -187,6 +232,8 @@ void USequencerTools::CaptureRange()
 								TransformToEdit.Rotation.Z.Values,
 								TransformToEdit.Rotation.Z.Times,
 								TransformToEdit.Rotation.Z.Indexes);
+							UnsortedValues += TransformToEdit.Rotation.Z.Values;
+							UnsortedTimes += TransformToEdit.Rotation.Z.Times;
 						}
 					}
 
@@ -200,6 +247,8 @@ void USequencerTools::CaptureRange()
 								TransformToEdit.Scale.X.Values,
 								TransformToEdit.Scale.X.Times,
 								TransformToEdit.Scale.X.Indexes);
+							UnsortedValues += TransformToEdit.Scale.X.Values;
+							UnsortedTimes += TransformToEdit.Scale.X.Times;
 						}
 						if (Y)
 						{
@@ -209,6 +258,8 @@ void USequencerTools::CaptureRange()
 								TransformToEdit.Scale.Y.Values,
 								TransformToEdit.Scale.Y.Times,
 								TransformToEdit.Scale.Y.Indexes);
+							UnsortedValues += TransformToEdit.Scale.Y.Values;
+							UnsortedTimes += TransformToEdit.Scale.Y.Times;
 						}
 						if (Z)
 						{
@@ -218,32 +269,22 @@ void USequencerTools::CaptureRange()
 								TransformToEdit.Scale.Z.Values,
 								TransformToEdit.Scale.Z.Times,
 								TransformToEdit.Scale.Z.Indexes);
+							UnsortedValues += TransformToEdit.Scale.Z.Values;
+							UnsortedTimes += TransformToEdit.Scale.Z.Times;
 						}
 					}
-					
-
-					TArray <float> SortedValues;
-					
-					SortedValues += TransformToEdit.Locaion.X.Values;
-					SortedValues += TransformToEdit.Locaion.Y.Values;
-					SortedValues += TransformToEdit.Locaion.Z.Values;
-					SortedValues += TransformToEdit.Rotation.X.Values;
-					SortedValues += TransformToEdit.Rotation.Y.Values;
-					SortedValues += TransformToEdit.Rotation.Z.Values;
-					SortedValues += TransformToEdit.Scale.X.Values;
-					SortedValues += TransformToEdit.Scale.Y.Values;
-					SortedValues += TransformToEdit.Scale.Z.Values;
-
-					SortedValues.Sort(
-						[](const float lhv, const float rhv)
+				
+					if(UnsortedTimes.Num() && UnsortedValues.Num())
 					{
-						return lhv < rhv;
-					}
-					);
-					MaxValue = SortedValues.Last();
-					MinValue = SortedValues[0];
+						UnsortedValues.Sort();
+						MaxValue = UnsortedValues[UnsortedValues.Num() - 1];
+						MinValue = UnsortedValues[0];
 
-					GEditor->EndTransaction();
+						UnsortedTimes.Sort();
+						MaxTime = UnsortedTimes[UnsortedTimes.Num() - 1];
+						MinTime = UnsortedTimes[0];
+						GEditor->EndTransaction();
+					}
 				}
 			}
 			else USupport::NotificationBox(FString("Select an Actor in Level Sequence"));
@@ -259,6 +300,7 @@ void USequencerTools::ResetCapture()
 	CurvesValuesToEdit.Empty();
 	TransformTypes.Empty();
 	Axises.Empty();
+	TransformToEdit.Reset();
 }
 
 void USequencerTools::GetValuesAndTimesToEditFromCurve(FRichCurve Curve, float FromTime, float ToTime, TArray<float>& OutValues, TArray<float>& OutTimes, TArray<int32>& OutIndexes)
@@ -280,6 +322,8 @@ void USequencerTools::GetValuesAndTimesToEditFromCurve(FRichCurve Curve, float F
 
 void USequencerTools::GetTransformAndCurves(TArray<TransformType>& TransformTypes, TArray<EAxis::Type>& Axises)
 {
+	TransformTypes.Empty();
+	Axises.Empty();
 	if (Location)
 		TransformTypes.Add(TransformType::Loc);
 	if (Rotation)
