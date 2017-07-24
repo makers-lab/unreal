@@ -40,63 +40,135 @@ void USequencerTools::CaptureRange()
 		FString PackageName;
 		FString CurrentInstanceName;
 		FString InstanceName;
-		//FAssetToolsModule& AssetToolsModule = FModuleManager::GetModuleChecked<FAssetToolsModule>("AssetTools");
 
-		//AssetToolsModule.Get().CreateUniqueAssetName("InstanceTest.InstanceTest", TEXT("_New"), PackageName, Name);
+		int32 count = 0;
 
-		//CreateUniqueAssetName("InstanceTest.InstanceTest", DefaultSuffix, PackageName, Name);
+		GEditor->GetSelectedActors();
+
 
 		UMaterialInstanceConstantFactoryNew* Factory = NewObject<UMaterialInstanceConstantFactoryNew>();
 		Factory->InitialParent = nullptr;
 
-		UMaterialInstanceDynamic* DynMaterial = nullptr;
-
-
-
-
-		for (auto material : ContentSelectedMaterials)
+		for (UMaterial* material : ContentSelectedMaterials)
 		{
-			Factory->InitialParent = material;
-			PackageName = material->GetPathName();
-			Name = material->GetName();
-			DynMaterial = UMaterialInstanceDynamic::Create(material, this,"TESTInstanse");
 
+			PackageName = material->GetPathName();
+			Factory->InitialParent = material;
 		}
 
-		for (auto actorMaterials : ActorSelectedMaterials)
+
+
+		FSelectionIterator it = GEditor->GetSelectedActorIterator();
+		for (it; it; ++it)
 		{
-
-			FSelectionIterator it = GEditor->GetSelectedActorIterator();
-			for (it; it; ++it)
+			AActor *act = Cast<AActor>(*it);
+			UE_LOG(LogTemp, Display, TEXT("Actor %s "), *act->GetName());
+			if (ASkeletalMeshActor* SkelMeshActor = Cast<ASkeletalMeshActor>(act))
 			{
-				AActor *act = Cast<AActor>(*it);
-				//UE_LOG(LogTemp, Display, TEXT("Actor %s "), *act->GetName());
-
-				TArray<UStaticMeshComponent*> Components;
-				act->GetComponents<UStaticMeshComponent>(Components);
-				for (int32 i = 0; i < Components.Num(); i++)
+				if (SkelMeshActor && SkelMeshActor->GetSkeletalMeshComponent())
 				{
-						auto Texture = actorMaterials[0].BaseColor.Expression->GetReferencedTexture();
-						DynMaterial->SetTextureParameterValue("Texture", Texture);
-	
-						//UMaterialInstanceConstantFactoryNew* Factory = NewObject<UMaterialInstanceConstantFactoryNew>();
-						//Factory->InitialParent = BaseMaterial;// (UMaterial*)DynMaterial;
+					uint32 materialCounter = 0;
+
+
+					for (auto m : SkelMeshActor->GetSkeletalMeshComponent()->SkeletalMesh->Materials)
+					{
+						auto material = m.MaterialInterface->GetMaterial();
+						
+						
+				
+						Name = material->GetName();
+
+						auto Texture = material->BaseColor.Expression->GetReferencedTexture();
+
 						FAssetToolsModule& AssetToolsModule = FModuleManager::GetModuleChecked<FAssetToolsModule>("AssetTools");
-						UObject* NewAsset = AssetToolsModule.Get().CreateAsset(Name+"_Instance", FPackageName::GetLongPackagePath(PackageName), UMaterialInstanceConstant::StaticClass(), Factory);
-							
+						UObject* NewAsset = AssetToolsModule.Get().CreateAsset(Name + "_Instance" + FString::FromInt(count), FPackageName::GetLongPackagePath(PackageName), UMaterialInstanceConstant::StaticClass(), Factory);
+
 						UMaterialInstanceConstant* instance = (UMaterialInstanceConstant*)NewAsset;
 
 						instance->SetTextureParameterValueEditorOnly("Texture", Texture);
 
 
+						SkelMeshActor->GetSkeletalMeshComponent()->SetMaterial(materialCounter, instance);
 
-						for (int32 j = 0; j < Components[i]->GetNumMaterials(); j++)
-						{
-							Components[i]->SetMaterial(j, instance);
-						}
+
+						materialCounter++;
+						//outMaterials.Add(material);
+					}
+					UE_LOG(LogTemp, Display, TEXT("%d materials collected\n"), SkelMeshActor->GetSkeletalMeshComponent()->SkeletalMesh->Materials.Num());
 				}
 			}
+			else
+			{
+				// actor's component materials storage, reset per iteration
+				TArray<UMaterialInterface*> compMaterials;
+				// actor meshes storage
+				TArray<UStaticMeshComponent*> actorComponents;
+				// getting meshes from actor
+				act->GetComponents<UStaticMeshComponent>(actorComponents);
+				UE_LOG(LogTemp, Display, TEXT("contains %d components\n"), actorComponents.Num());
+
+		
+				// get materials from each component and add to a TSet
+				for (auto c : actorComponents)
+				{
+					compMaterials.Reset();
+					c->GetUsedMaterials(compMaterials);
+					uint32 materialCounter = 0;
+					for (auto materialInterface : compMaterials)
+					{
+
+						UMaterial* material = materialInterface->GetMaterial();
+						Name = material->GetName();
+						
+
+
+						FAssetToolsModule& AssetToolsModule = FModuleManager::GetModuleChecked<FAssetToolsModule>("AssetTools");
+						UObject* NewAsset = AssetToolsModule.Get().CreateAsset(Name + "_Instance" + FString::FromInt(count), FPackageName::GetLongPackagePath(PackageName), UMaterialInstanceConstant::StaticClass(), Factory);
+
+						UMaterialInstanceConstant* instance = (UMaterialInstanceConstant*)NewAsset;
+						if (material->BaseColor.Expression != nullptr)
+						{
+							auto Texture = material->BaseColor.Expression->GetReferencedTexture();
+							instance->SetTextureParameterValueEditorOnly("Texture", Texture);
+						}
+
+						c->SetMaterial(materialCounter, instance);
+
+						materialCounter++;
+					}
+
+				}
+			}
+
+			count++;
 		}
+
+
+
+
+		//if (Factory->InitialParent != nullptr)
+		//for (auto actorMaterials : ActorSelectedMaterials)
+		//{
+
+
+		//				auto Texture = actorMaterials->BaseColor.Expression->GetReferencedTexture();
+	
+		//				//UMaterialInstanceConstantFactoryNew* Factory = NewObject<UMaterialInstanceConstantFactoryNew>();
+		//				//Factory->InitialParent = BaseMaterial;// (UMaterial*)DynMaterial;
+		//				FAssetToolsModule& AssetToolsModule = FModuleManager::GetModuleChecked<FAssetToolsModule>("AssetTools");
+		//				UObject* NewAsset = AssetToolsModule.Get().CreateAsset(Name+"_Instance"+ FString::FromInt(count) , FPackageName::GetLongPackagePath(PackageName), UMaterialInstanceConstant::StaticClass(), Factory);
+		//					
+		//				UMaterialInstanceConstant* instance = (UMaterialInstanceConstant*)NewAsset;
+		//				
+		//				instance->SetTextureParameterValueEditorOnly("Texture", Texture);
+		//	
+		//				
+		//				
+		//				
+		//				
+		//				
+		//				count++;
+		//}
 
 
 
