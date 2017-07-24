@@ -32,8 +32,7 @@ void FFaustToolsCustomization::CustomizeDetails(IDetailLayoutBuilder& DetailBuil
 				const FText ButtonCaption = FText::FromString(FunctionName);
 				const FText FilteringString = FText::FromString(FunctionName);
 				const TAttribute <FText> ToolTip = FText::Format(LOCTEXT("ToolTipText", "{0}"), Function->GetToolTipText());
-				if (FunctionName == "CaptureRange" || FunctionName == "ResetCapture")
-				{
+
 					Parameters.AddCustomRow(FilteringString)
 						.ValueContent()
 						[
@@ -42,7 +41,6 @@ void FFaustToolsCustomization::CustomizeDetails(IDetailLayoutBuilder& DetailBuil
 						.ToolTipText(ToolTip)
 						.OnClicked(FOnClicked::CreateStatic(&FFaustToolsCustomization::ExecuteToolCommand, &DetailBuilder, Function))
 						];
-				}
 			}
 		}
 	}

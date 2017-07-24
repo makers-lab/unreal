@@ -17,30 +17,30 @@
 #include "UObject/ConstructorHelpers.h"
 
 
-#include "USequencerTools.generated.h"
+#include "UMaterialTools.generated.h"
 
 
 UCLASS(Blueprintable)
-class USequencerTools : public UFaustToolsBaseClass
+class UMaterialTools : public UFaustToolsBaseClass
 {
 	GENERATED_BODY()
 public:
 	TSet<UMaterial*> GetSelectedActorMaterials();
 	TSet<UMaterial*> GetSelectedMaterialsInContentBrowser();
 
-	USequencerTools();
+	UMaterialTools();
 
 	virtual void PreEditChange(UProperty* PropertyAboutToChange) override;
 	virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
 	virtual void OnToolClosed() override;
 
-	UFUNCTION(Exec)
-		void CaptureRange();
-	UFUNCTION(Exec)
-		void ResetCapture();
+	UPROPERTY(EditAnywhere, Category = "Material for instance")
+	UMaterial* BaseMaterialForInstance;
 
-	UPROPERTY(EditAnywhere, Category = "Transform Parameters")
-		bool Location;
+	UFUNCTION(Exec)
+		void CreateInstance();
+
+	//static void NotificationBox(FString String, float FadeIn = 0.1f, float Expire = 1.5, float FadeOut = 1.f);
 
 };
 
