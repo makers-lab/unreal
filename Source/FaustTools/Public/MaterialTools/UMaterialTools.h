@@ -40,7 +40,7 @@ public:
 	UFUNCTION(Exec)
 		void CreateInstance();
 
-	//static void NotificationBox(FString String, float FadeIn = 0.1f, float Expire = 1.5, float FadeOut = 1.f);
+	static void NotificationBox(FString String, float FadeIn = 0.1f, float Expire = 1.5, float FadeOut = 1.f);
 
 };
 

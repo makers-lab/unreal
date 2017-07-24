@@ -2,33 +2,34 @@
 #include "UMaterialTools.h"
 #include "AssetToolsModule.h"
 #include "IAssetTools.h"
+#include "NotificationManager.h"
+#include "SNotificationList.h"
 
 
-
-#define LOCTEXT_NAMESPACE "MaterialPipeline"
+#define LOCTEXT_NAMESPACE "UMaterialTools"
 
 UMaterialTools::UMaterialTools()
 {
 }
 
-//void UMaterialTools::NotificationBox(FString String, float FadeIn /*= 0.1f*/, float Expire /*= 1.5*/, float FadeOut /*= 1.f*/)
-//{
-//#if WITH_EDITOR
-//	const FText Message = FText::Format(LOCTEXT("NotificationInfo", "{0}"), FText::FromString(String));
-//	FNotificationInfo Info(Message);
-//	Info.FadeInDuration = FadeIn;
-//	Info.ExpireDuration = Expire;
-//	Info.FadeOutDuration = FadeOut;
-//	Info.bUseThrobber = false;
-//	Info.bUseSuccessFailIcons = true;
-//	Info.bUseLargeFont = true;
-//	Info.bFireAndForget = false;
-//	Info.bAllowThrottleWhenFrameRateIsLow = false;
-//	auto NotificationItem = FSlateNotificationManager::Get().AddNotification(Info);
-//	NotificationItem->SetCompletionState(SNotificationItem::CS_Success);
-//	NotificationItem->ExpireAndFadeout();
-//#endif
-//}
+void UMaterialTools::NotificationBox(FString String, float FadeIn /*= 0.1f*/, float Expire /*= 1.5*/, float FadeOut /*= 1.f*/)
+{
+#if WITH_EDITOR
+	const FText Message = FText::Format(LOCTEXT("NotificationInfo", "{0}"), FText::FromString(String));
+	FNotificationInfo Info(Message);
+	Info.FadeInDuration = FadeIn;
+	Info.ExpireDuration = Expire;
+	Info.FadeOutDuration = FadeOut;
+	Info.bUseThrobber = false;
+	Info.bUseSuccessFailIcons = true;
+	Info.bUseLargeFont = true;
+	Info.bFireAndForget = false;
+	Info.bAllowThrottleWhenFrameRateIsLow = false;
+	auto NotificationItem = FSlateNotificationManager::Get().AddNotification(Info);
+	NotificationItem->SetCompletionState(SNotificationItem::CS_Success);
+	NotificationItem->ExpireAndFadeout();
+#endif
+}
 
 
 
@@ -176,10 +177,10 @@ void UMaterialTools::CreateInstance()
 				}
 			}
 			else
-				;//UMaterialTools::NotificationBox(FString("Select Actor in Viewport"));
+			UMaterialTools::NotificationBox(FString("Select Actor in Viewport"));
 		}
 		else
-			;//UMaterialTools::NotificationBox(FString("Select Base Material in Content browser"));
+			UMaterialTools::NotificationBox(FString("Select Base Material in Plugin or Content browser"));
 	
 }
 
