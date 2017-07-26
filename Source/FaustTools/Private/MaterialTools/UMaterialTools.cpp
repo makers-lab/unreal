@@ -4,7 +4,7 @@
 #include "IAssetTools.h"
 #include "NotificationManager.h"
 #include "SNotificationList.h"
-
+#include "SContentReference.h"
 
 #define LOCTEXT_NAMESPACE "UMaterialTools"
 
@@ -65,7 +65,7 @@ void UMaterialTools::CreateInstance()
 
 
 		// Create an appropriate and unique name 
-		FString Name;
+		FString Name = "BaseFlattenMaterial.BaseFlattenMaterial";
 		FString PackageName;
 		FString CurrentInstanceName;
 		FString InstanceName;
@@ -102,28 +102,63 @@ void UMaterialTools::CreateInstance()
 				{
 					AActor *act = Cast<AActor>(*it);
 					UE_LOG(LogTemp, Display, TEXT("Actor %s "), *act->GetName());
+					FString ActorPath = *act->GetPathName() + FString("/InstanceMaterial");
+					
+					//FString NewFolder = SkelMeshActor->GetFolderPath().ToString() + FString("/ActorMaterialInstance");
+
+
+					FString NewFolder = FPaths::GetPath(PackageName);
+		
+					FString FullPath = FPaths::GameContentDir()+"MaterialInstanceFolder";//FPaths::GameContentDir() +NewFolder+"/MaterialInstanceFolder";
+					
+
+					FString FullPath2 = IFileManager::Get().ConvertToAbsolutePathForExternalAppForRead(*FullPath);
+
+					FullPath = "/Game/MaterialInstanceFolder/" + *(*act->GetHumanReadableName());
+
+					bool createtedFolder = FPlatformFileManager::Get().GetPlatformFile().CreateDirectory(*FullPath2);
+				
 					if (ASkeletalMeshActor* SkelMeshActor = Cast<ASkeletalMeshActor>(act))
 					{
+					
+
 						if (SkelMeshActor && SkelMeshActor->GetSkeletalMeshComponent())
 						{
 							uint32 materialCounter = 0;
+							FString directory = FPackageName::GetLongPackagePath(PackageName);// SkelMeshActor->GetPathName(); //.ToString();
+							FStringAssetReference ThePath = FStringAssetReference(act);
+							
+							if (ThePath.IsValid())
+							{
+
+								bool createtedFolder = FPlatformFileManager::Get().GetPlatformFile().CreateDirectory(*directory);
+								if (createtedFolder)
+									UMaterialTools::NotificationBox(FString("Folder created"));
+							}
+						
+						
+
 
 
 							for (auto m : SkelMeshActor->GetSkeletalMeshComponent()->SkeletalMesh->Materials)
 							{
+								
 								UMaterial* material = m.MaterialInterface->GetMaterial();
 								Name = material->GetName();
 								UTexture* Texture = material->BaseColor.Expression->GetReferencedTexture();
 
 								FAssetToolsModule& AssetToolsModule = FModuleManager::GetModuleChecked<FAssetToolsModule>("AssetTools");
 								UObject* NewAsset = AssetToolsModule.Get().CreateAsset(Name + "_Instance" +
-									FString::FromInt(count), FPackageName::GetLongPackagePath(PackageName), UMaterialInstanceConstant::StaticClass(), Factory);
+									FString::FromInt(count), FullPath, UMaterialInstanceConstant::StaticClass(), Factory);
 
 								if (NewAsset != nullptr)
 								{
 									UMaterialInstanceConstant* instance = (UMaterialInstanceConstant*)NewAsset;
 									instance->SetTextureParameterValueEditorOnly("Texture", Texture);
+									FString PathDirectory = SkelMeshActor->GetSkeletalMeshComponent()->GetPathName();
+									bool createtedFolder = FPlatformFileManager::Get().GetPlatformFile().CreateDirectory(*PathDirectory);
 									SkelMeshActor->GetSkeletalMeshComponent()->SetMaterial(materialCounter, instance);
+
 								}
 								materialCounter++;
 							}
@@ -154,7 +189,7 @@ void UMaterialTools::CreateInstance()
 
 								FAssetToolsModule& AssetToolsModule = FModuleManager::GetModuleChecked<FAssetToolsModule>("AssetTools");
 								UObject* NewAsset = AssetToolsModule.Get().CreateAsset(Name + "_Instance" +
-									FString::FromInt(count), FPackageName::GetLongPackagePath(PackageName), UMaterialInstanceConstant::StaticClass(), Factory);
+									FString::FromInt(count), FullPath, UMaterialInstanceConstant::StaticClass(), Factory);
 
 								if (NewAsset != nullptr)
 								{
@@ -230,6 +265,23 @@ TSet<UMaterial*> UMaterialTools::GetSelectedActorMaterials()
 	return outMaterials;
 }
 
+UMaterialInstanceConstant*  UMaterialTools::CreateAssetByParentMaterial(UMaterial* ParentMaterial , UMaterialInstanceConstantFactoryNew* Factory,  FString PathToAsset , FString AssetName)
+{
+	UTexture* Texture = ParentMaterial->BaseColor.Expression->GetReferencedTexture();
+
+	FAssetToolsModule& AssetToolsModule = FModuleManager::GetModuleChecked<FAssetToolsModule>("AssetTools");
+	UObject* NewAsset = AssetToolsModule.Get().CreateAsset(AssetName + "_Instance", PathToAsset, UMaterialInstanceConstant::StaticClass(), Factory);
+
+	if (NewAsset != nullptr)
+	{
+		UMaterialInstanceConstant* instance = (UMaterialInstanceConstant*)NewAsset;
+		instance->SetTextureParameterValueEditorOnly("Texture", Texture);
+		bool createtedFolder = FPlatformFileManager::Get().GetPlatformFile().CreateDirectory(*PathToAsset);
+		return instance;
+	}
+	else
+		return nullptr;
+}
 
 TSet<UMaterial*> UMaterialTools::GetSelectedMaterialsInContentBrowser()
 {
