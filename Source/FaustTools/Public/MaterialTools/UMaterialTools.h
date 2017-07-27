@@ -25,7 +25,7 @@ class UMaterialTools : public UFaustToolsBaseClass
 {
 	GENERATED_BODY()
 public:
-	UMaterialInstanceConstant* CreateAssetByParentMaterial(UMaterial* ParentMaterial, UMaterialInstanceConstantFactoryNew* Factory, FString PathToAsset, FString AssetName);
+	UMaterialInstanceConstant* CreateAssetByParentMaterial(UMaterial* ParentMaterial, UMaterialInstanceConstantFactoryNew* Factory, FString* PathToAsset, FString* AssetName);
 	TSet<UMaterial*> GetSelectedActorMaterials();
 	TSet<UMaterial*> GetSelectedMaterialsInContentBrowser();
 

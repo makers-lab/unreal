@@ -114,7 +114,7 @@ void UMaterialTools::CreateInstance()
 
 					FString FullPath2 = IFileManager::Get().ConvertToAbsolutePathForExternalAppForRead(*FullPath);
 
-					FullPath = "/Game/MaterialInstanceFolder/" + *(*act->GetHumanReadableName());
+					FullPath = "/Game/MaterialInstanceFolder/" + act->GetHumanReadableName();
 
 					bool createtedFolder = FPlatformFileManager::Get().GetPlatformFile().CreateDirectory(*FullPath2);
 				
@@ -145,21 +145,19 @@ void UMaterialTools::CreateInstance()
 								
 								UMaterial* material = m.MaterialInterface->GetMaterial();
 								Name = material->GetName();
+								
+								FullPath2 = material->GetFName().ToString();
+
+								material->AppendName(FullPath2);
+								
+								FullPath2 = material->GetFullGroupName(true);
+
 								UTexture* Texture = material->BaseColor.Expression->GetReferencedTexture();
 
-								FAssetToolsModule& AssetToolsModule = FModuleManager::GetModuleChecked<FAssetToolsModule>("AssetTools");
-								UObject* NewAsset = AssetToolsModule.Get().CreateAsset(Name + "_Instance" +
-									FString::FromInt(count), FullPath, UMaterialInstanceConstant::StaticClass(), Factory);
+								UMaterialInstanceConstant* instance = CreateAssetByParentMaterial(material, Factory, &FullPath, &Name);
 
-								if (NewAsset != nullptr)
-								{
-									UMaterialInstanceConstant* instance = (UMaterialInstanceConstant*)NewAsset;
-									instance->SetTextureParameterValueEditorOnly("Texture", Texture);
-									FString PathDirectory = SkelMeshActor->GetSkeletalMeshComponent()->GetPathName();
-									bool createtedFolder = FPlatformFileManager::Get().GetPlatformFile().CreateDirectory(*PathDirectory);
+								if (instance != nullptr)
 									SkelMeshActor->GetSkeletalMeshComponent()->SetMaterial(materialCounter, instance);
-
-								}
 								materialCounter++;
 							}
 						}
@@ -176,35 +174,22 @@ void UMaterialTools::CreateInstance()
 
 
 						// get materials from each component and add to a TSet
-						for (auto c : actorComponents)
+						for (auto component : actorComponents)
 						{
 							compMaterials.Reset();
-							c->GetUsedMaterials(compMaterials);
+							component->GetUsedMaterials(compMaterials);
 							uint32 materialCounter = 0;
 							for (auto materialInterface : compMaterials)
 							{
-
 								UMaterial* material = materialInterface->GetMaterial();
 								Name = material->GetName();
 
-								FAssetToolsModule& AssetToolsModule = FModuleManager::GetModuleChecked<FAssetToolsModule>("AssetTools");
-								UObject* NewAsset = AssetToolsModule.Get().CreateAsset(Name + "_Instance" +
-									FString::FromInt(count), FullPath, UMaterialInstanceConstant::StaticClass(), Factory);
+								UMaterialInstanceConstant* instance = CreateAssetByParentMaterial(material, Factory, &FullPath, &Name);
 
-								if (NewAsset != nullptr)
-								{
-									UMaterialInstanceConstant* instance = (UMaterialInstanceConstant*)NewAsset;
-									if (material->BaseColor.Expression != nullptr)
-									{
-										auto Texture = material->BaseColor.Expression->GetReferencedTexture();
-										instance->SetTextureParameterValueEditorOnly("Texture", Texture);
-									}
-
-									c->SetMaterial(materialCounter, instance);
-								}
+								if (instance != nullptr)
+									component->SetMaterial(materialCounter, instance);
 								materialCounter++;
 							}
-
 						}
 					}
 
@@ -265,18 +250,24 @@ TSet<UMaterial*> UMaterialTools::GetSelectedActorMaterials()
 	return outMaterials;
 }
 
-UMaterialInstanceConstant*  UMaterialTools::CreateAssetByParentMaterial(UMaterial* ParentMaterial , UMaterialInstanceConstantFactoryNew* Factory,  FString PathToAsset , FString AssetName)
+UMaterialInstanceConstant*  UMaterialTools::CreateAssetByParentMaterial(UMaterial* ParentMaterial , UMaterialInstanceConstantFactoryNew* Factory,  FString* PathToAsset , FString* AssetName)
 {
-	UTexture* Texture = ParentMaterial->BaseColor.Expression->GetReferencedTexture();
+
+	
 
 	FAssetToolsModule& AssetToolsModule = FModuleManager::GetModuleChecked<FAssetToolsModule>("AssetTools");
-	UObject* NewAsset = AssetToolsModule.Get().CreateAsset(AssetName + "_Instance", PathToAsset, UMaterialInstanceConstant::StaticClass(), Factory);
+	UObject* NewAsset = AssetToolsModule.Get().CreateAsset(*AssetName + "_Instance", *PathToAsset, UMaterialInstanceConstant::StaticClass(), Factory);
 
 	if (NewAsset != nullptr)
 	{
 		UMaterialInstanceConstant* instance = (UMaterialInstanceConstant*)NewAsset;
-		instance->SetTextureParameterValueEditorOnly("Texture", Texture);
-		bool createtedFolder = FPlatformFileManager::Get().GetPlatformFile().CreateDirectory(*PathToAsset);
+		if (ParentMaterial->BaseColor.Expression != nullptr)
+		{
+			UTexture* Texture = ParentMaterial->BaseColor.Expression->GetReferencedTexture();
+			instance->SetTextureParameterValueEditorOnly("Texture", Texture);
+		}
+
+		bool createtedFolder = FPlatformFileManager::Get().GetPlatformFile().CreateDirectory(**PathToAsset);
 		return instance;
 	}
 	else
