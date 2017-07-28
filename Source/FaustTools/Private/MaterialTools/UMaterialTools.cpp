@@ -57,15 +57,8 @@ void UMaterialTools::CreateInstance()
 		TSet<UMaterial*> ActorSelectedMaterials = GetSelectedActorMaterials();
 
 
-
-		UMaterial* BaseMaterial = LoadObject<UMaterial>(NULL, TEXT("/Engine/EngineMaterials/BaseFlattenMaterial.BaseFlattenMaterial"), NULL, LOAD_None, NULL);
-		check(BaseMaterial);
-
-		const FString DefaultSuffix = TEXT("_Inst");
-
-
 		// Create an appropriate and unique name 
-		FString Name = "BaseFlattenMaterial.BaseFlattenMaterial";
+		FString Name;
 		FString PackageName;
 		FString CurrentInstanceName;
 		FString InstanceName;
@@ -102,42 +95,28 @@ void UMaterialTools::CreateInstance()
 				{
 					AActor *act = Cast<AActor>(*it);
 					UE_LOG(LogTemp, Display, TEXT("Actor %s "), *act->GetName());
-					FString ActorPath = *act->GetPathName() + FString("/InstanceMaterial");
-					
-					//FString NewFolder = SkelMeshActor->GetFolderPath().ToString() + FString("/ActorMaterialInstance");
-
-
+			
+						
 					FString NewFolder = FPaths::GetPath(PackageName);
 		
-					FString FullPath = FPaths::GameContentDir()+"MaterialInstanceFolder";//FPaths::GameContentDir() +NewFolder+"/MaterialInstanceFolder";
+					FString FullPath = FPaths::GameContentDir()+"MaterialInstanceFolder";
 					
-
 					FString FullPath2 = IFileManager::Get().ConvertToAbsolutePathForExternalAppForRead(*FullPath);
 
 					FullPath = "/Game/MaterialInstanceFolder/" + act->GetHumanReadableName();
 
-					bool createtedFolder = FPlatformFileManager::Get().GetPlatformFile().CreateDirectory(*FullPath2);
-				
 					if (ASkeletalMeshActor* SkelMeshActor = Cast<ASkeletalMeshActor>(act))
 					{
-					
+						
 
 						if (SkelMeshActor && SkelMeshActor->GetSkeletalMeshComponent())
 						{
+						
+							FString PathToObject = SkelMeshActor->GetSkeletalMeshComponent()->SkeletalMesh->GetPathName();
+
 							uint32 materialCounter = 0;
 							FString directory = FPackageName::GetLongPackagePath(PackageName);// SkelMeshActor->GetPathName(); //.ToString();
 							FStringAssetReference ThePath = FStringAssetReference(act);
-							
-							if (ThePath.IsValid())
-							{
-
-								bool createtedFolder = FPlatformFileManager::Get().GetPlatformFile().CreateDirectory(*directory);
-								if (createtedFolder)
-									UMaterialTools::NotificationBox(FString("Folder created"));
-							}
-						
-						
-
 
 
 							for (auto m : SkelMeshActor->GetSkeletalMeshComponent()->SkeletalMesh->Materials)
@@ -149,27 +128,19 @@ void UMaterialTools::CreateInstance()
 								UTexture* Texture = material->BaseColor.Expression->GetReferencedTexture();
 
 								SkelMeshActor->GetSkeletalMeshComponent()->SetMaterial(materialCounter, nullptr);
-							
+								FullPath = SkelMeshActor->GetSkeletalMeshComponent()->SkeletalMesh->GetPathName();
 
-								FString RelativePath = FPaths::GameContentDir();
+								Name = SkelMeshActor->GetSkeletalMeshComponent()->SkeletalMesh->GetExporterName().ToString();
 
-								FString FullPathName = IFileManager::Get().ConvertToAbsolutePathForExternalAppForRead(*RelativePath)+ FString("MaterialInstanceFolder/") + act->GetHumanReadableName() + FString("/") + *Name + FString("_Instance.uasset");
+								Name = SkelMeshActor->GetSkeletalMeshComponent()->SkeletalMesh->GetFullName();
 
-								FullPath2 = FullPath2.Append(FString("/") + *Name + FString("_Instance.uasset"));
-								if (FPlatformFileManager::Get().GetPlatformFile().FileExists(*FullPathName))
+								 SkelMeshActor->GetSkeletalMeshComponent()->SkeletalMesh->AppendName(Name);
 
-									UMaterialTools::NotificationBox(FString("Deleted Files "));
-									bool deleted = FPlatformFileManager::Get().GetPlatformFile().DeleteFile(*FullPathName);
+								FullPath.RemoveFromEnd(SkelMeshActor->GetSkeletalMeshComponent()->SkeletalMesh->GetFName().ToString());
 
-								if(deleted)
-									UMaterialTools::NotificationBox(FString("Created New Files "));
 
-							
-								FString PathToObject =  SkelMeshActor->GetSkeletalMeshComponent()->SkeletalMesh->GetPathName();
-									
-								RelativePath = PathToObject;
+
 								UMaterialInstanceConstant* instance = CreateAssetByParentMaterial(material, Factory, &FullPath, &Name);
-
 
 								if (instance != nullptr)
 									SkelMeshActor->GetSkeletalMeshComponent()->SetMaterial(materialCounter, instance);
@@ -270,8 +241,20 @@ TSet<UMaterial*> UMaterialTools::GetSelectedActorMaterials()
 
 UMaterialInstanceConstant*  UMaterialTools::CreateAssetByParentMaterial(UMaterial* ParentMaterial , UMaterialInstanceConstantFactoryNew* Factory,  FString* PathToAsset , FString* AssetName)
 {
-
 	
+	/*FString RelativePath = FPaths::GameContentDir();
+
+	FString FullPathName = IFileManager::Get().ConvertToAbsolutePathForExternalAppForRead(*RelativePath) + FString("MaterialInstanceFolder/") + act->GetHumanReadableName() + FString("/") + *AssetName + FString("_Instance.uasset");
+
+
+	if (FPlatformFileManager::Get().GetPlatformFile().FileExists(*FullPathName))
+
+		UMaterialTools::NotificationBox(FString("Deleted Files "));
+	bool deleted = FPlatformFileManager::Get().GetPlatformFile().DeleteFile(*FullPathName);
+
+	if (deleted)
+		UMaterialTools::NotificationBox(FString("Created New Files "));
+	*/
 
 	FAssetToolsModule& AssetToolsModule = FModuleManager::GetModuleChecked<FAssetToolsModule>("AssetTools");
 	UObject* NewAsset = AssetToolsModule.Get().CreateAsset(*AssetName + "_Instance", *PathToAsset, UMaterialInstanceConstant::StaticClass(), Factory);
@@ -284,8 +267,6 @@ UMaterialInstanceConstant*  UMaterialTools::CreateAssetByParentMaterial(UMateria
 			UTexture* Texture = ParentMaterial->BaseColor.Expression->GetReferencedTexture();
 			instance->SetTextureParameterValueEditorOnly("Texture", Texture);
 		}
-
-		bool createtedFolder = FPlatformFileManager::Get().GetPlatformFile().CreateDirectory(**PathToAsset);
 		return instance;
 	}
 	else
