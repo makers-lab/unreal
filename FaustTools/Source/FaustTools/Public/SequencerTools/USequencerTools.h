@@ -24,31 +24,33 @@ public:
 	virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
 	virtual void OnToolClosed() override;
 
-	UFUNCTION(Exec)
-	void CaptureRange();
-
-	UFUNCTION(Exec)
-	void ResetCapture();
-
-	UPROPERTY(EditAnywhere, Category = "Transform Parameters")
-	bool Location;
-	UPROPERTY(EditAnywhere, Category = "Transform Parameters")
-	bool Rotation;
-	UPROPERTY(EditAnywhere, Category = "Transform Parameters")
-	bool Scaling;
-
-	UPROPERTY(EditAnywhere, Category = "Curve Parameters")
-	bool X;
-	UPROPERTY(EditAnywhere, Category = "Curve Parameters")
-	bool Y;
-	UPROPERTY(EditAnywhere, Category = "Curve Parameters")
-	bool Z;
+	
 
 	UPROPERTY(EditAnywhere, Category = "Parameters", meta = (DisplayName = "From Frame", Keywords = "From Frame"))
 	int32 FromFrame;
-	
+
 	UPROPERTY(EditAnywhere, Category = "Parameters", meta = (DisplayName = "To Frame", Keywords = "To Frame"))
 	int32 ToFrame;
+
+	UPROPERTY(EditAnywhere, Category = "Transform")
+	bool Location;
+	UPROPERTY(EditAnywhere, Category = "Transform")
+	bool Rotation;
+	UPROPERTY(EditAnywhere, Category = "Transform")
+	bool Scaling;
+
+	UPROPERTY(EditAnywhere, Category = "Curve")
+	bool XCurve;
+	UPROPERTY(EditAnywhere, Category = "Curve")
+	bool YCurve;
+	UPROPERTY(EditAnywhere, Category = "Curve")
+	bool ZCurve;
+
+	UFUNCTION(Exec)
+		void CaptureRange();
+
+	UFUNCTION(Exec)
+		void ResetCapture();
 
 	//Scale selected keys
 	UPROPERTY(EditAnywhere, Category = "Scaling", meta = (DisplayName = "Scale Captured Range Only", Keywords = "Scale Capture Range Only"))

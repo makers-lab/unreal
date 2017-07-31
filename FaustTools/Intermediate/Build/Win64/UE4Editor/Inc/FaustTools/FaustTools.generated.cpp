@@ -241,20 +241,20 @@ PRAGMA_DISABLE_DEPRECATION_WARNINGS
 				UProperty* NewProp_ScaleTopValue = new(EC_InternalUseOnlyConstructor, OuterClass, TEXT("ScaleTopValue"), RF_Public|RF_Transient|RF_MarkAsNative) UFloatProperty(CPP_PROPERTY_BASE(ScaleTopValue, USequencerTools), 0x0010000000000001);
 				CPP_BOOL_PROPERTY_BITMASK_STRUCT(bScaleCapturedRange, USequencerTools, bool);
 				UProperty* NewProp_bScaleCapturedRange = new(EC_InternalUseOnlyConstructor, OuterClass, TEXT("bScaleCapturedRange"), RF_Public|RF_Transient|RF_MarkAsNative) UBoolProperty(FObjectInitializer(), EC_CppProperty, CPP_BOOL_PROPERTY_OFFSET(bScaleCapturedRange, USequencerTools), 0x0010000000000001, CPP_BOOL_PROPERTY_BITMASK(bScaleCapturedRange, USequencerTools), sizeof(bool), true);
-				UProperty* NewProp_ToFrame = new(EC_InternalUseOnlyConstructor, OuterClass, TEXT("ToFrame"), RF_Public|RF_Transient|RF_MarkAsNative) UIntProperty(CPP_PROPERTY_BASE(ToFrame, USequencerTools), 0x0010000000000001);
-				UProperty* NewProp_FromFrame = new(EC_InternalUseOnlyConstructor, OuterClass, TEXT("FromFrame"), RF_Public|RF_Transient|RF_MarkAsNative) UIntProperty(CPP_PROPERTY_BASE(FromFrame, USequencerTools), 0x0010000000000001);
-				CPP_BOOL_PROPERTY_BITMASK_STRUCT(Z, USequencerTools, bool);
-				UProperty* NewProp_Z = new(EC_InternalUseOnlyConstructor, OuterClass, TEXT("Z"), RF_Public|RF_Transient|RF_MarkAsNative) UBoolProperty(FObjectInitializer(), EC_CppProperty, CPP_BOOL_PROPERTY_OFFSET(Z, USequencerTools), 0x0010000000000001, CPP_BOOL_PROPERTY_BITMASK(Z, USequencerTools), sizeof(bool), true);
-				CPP_BOOL_PROPERTY_BITMASK_STRUCT(Y, USequencerTools, bool);
-				UProperty* NewProp_Y = new(EC_InternalUseOnlyConstructor, OuterClass, TEXT("Y"), RF_Public|RF_Transient|RF_MarkAsNative) UBoolProperty(FObjectInitializer(), EC_CppProperty, CPP_BOOL_PROPERTY_OFFSET(Y, USequencerTools), 0x0010000000000001, CPP_BOOL_PROPERTY_BITMASK(Y, USequencerTools), sizeof(bool), true);
-				CPP_BOOL_PROPERTY_BITMASK_STRUCT(X, USequencerTools, bool);
-				UProperty* NewProp_X = new(EC_InternalUseOnlyConstructor, OuterClass, TEXT("X"), RF_Public|RF_Transient|RF_MarkAsNative) UBoolProperty(FObjectInitializer(), EC_CppProperty, CPP_BOOL_PROPERTY_OFFSET(X, USequencerTools), 0x0010000000000001, CPP_BOOL_PROPERTY_BITMASK(X, USequencerTools), sizeof(bool), true);
+				CPP_BOOL_PROPERTY_BITMASK_STRUCT(ZCurve, USequencerTools, bool);
+				UProperty* NewProp_ZCurve = new(EC_InternalUseOnlyConstructor, OuterClass, TEXT("ZCurve"), RF_Public|RF_Transient|RF_MarkAsNative) UBoolProperty(FObjectInitializer(), EC_CppProperty, CPP_BOOL_PROPERTY_OFFSET(ZCurve, USequencerTools), 0x0010000000000001, CPP_BOOL_PROPERTY_BITMASK(ZCurve, USequencerTools), sizeof(bool), true);
+				CPP_BOOL_PROPERTY_BITMASK_STRUCT(YCurve, USequencerTools, bool);
+				UProperty* NewProp_YCurve = new(EC_InternalUseOnlyConstructor, OuterClass, TEXT("YCurve"), RF_Public|RF_Transient|RF_MarkAsNative) UBoolProperty(FObjectInitializer(), EC_CppProperty, CPP_BOOL_PROPERTY_OFFSET(YCurve, USequencerTools), 0x0010000000000001, CPP_BOOL_PROPERTY_BITMASK(YCurve, USequencerTools), sizeof(bool), true);
+				CPP_BOOL_PROPERTY_BITMASK_STRUCT(XCurve, USequencerTools, bool);
+				UProperty* NewProp_XCurve = new(EC_InternalUseOnlyConstructor, OuterClass, TEXT("XCurve"), RF_Public|RF_Transient|RF_MarkAsNative) UBoolProperty(FObjectInitializer(), EC_CppProperty, CPP_BOOL_PROPERTY_OFFSET(XCurve, USequencerTools), 0x0010000000000001, CPP_BOOL_PROPERTY_BITMASK(XCurve, USequencerTools), sizeof(bool), true);
 				CPP_BOOL_PROPERTY_BITMASK_STRUCT(Scaling, USequencerTools, bool);
 				UProperty* NewProp_Scaling = new(EC_InternalUseOnlyConstructor, OuterClass, TEXT("Scaling"), RF_Public|RF_Transient|RF_MarkAsNative) UBoolProperty(FObjectInitializer(), EC_CppProperty, CPP_BOOL_PROPERTY_OFFSET(Scaling, USequencerTools), 0x0010000000000001, CPP_BOOL_PROPERTY_BITMASK(Scaling, USequencerTools), sizeof(bool), true);
 				CPP_BOOL_PROPERTY_BITMASK_STRUCT(Rotation, USequencerTools, bool);
 				UProperty* NewProp_Rotation = new(EC_InternalUseOnlyConstructor, OuterClass, TEXT("Rotation"), RF_Public|RF_Transient|RF_MarkAsNative) UBoolProperty(FObjectInitializer(), EC_CppProperty, CPP_BOOL_PROPERTY_OFFSET(Rotation, USequencerTools), 0x0010000000000001, CPP_BOOL_PROPERTY_BITMASK(Rotation, USequencerTools), sizeof(bool), true);
 				CPP_BOOL_PROPERTY_BITMASK_STRUCT(Location, USequencerTools, bool);
 				UProperty* NewProp_Location = new(EC_InternalUseOnlyConstructor, OuterClass, TEXT("Location"), RF_Public|RF_Transient|RF_MarkAsNative) UBoolProperty(FObjectInitializer(), EC_CppProperty, CPP_BOOL_PROPERTY_OFFSET(Location, USequencerTools), 0x0010000000000001, CPP_BOOL_PROPERTY_BITMASK(Location, USequencerTools), sizeof(bool), true);
+				UProperty* NewProp_ToFrame = new(EC_InternalUseOnlyConstructor, OuterClass, TEXT("ToFrame"), RF_Public|RF_Transient|RF_MarkAsNative) UIntProperty(CPP_PROPERTY_BASE(ToFrame, USequencerTools), 0x0010000000000001);
+				UProperty* NewProp_FromFrame = new(EC_InternalUseOnlyConstructor, OuterClass, TEXT("FromFrame"), RF_Public|RF_Transient|RF_MarkAsNative) UIntProperty(CPP_PROPERTY_BASE(FromFrame, USequencerTools), 0x0010000000000001);
 PRAGMA_ENABLE_DEPRECATION_WARNINGS
 				OuterClass->AddFunctionToFunctionMapWithOverriddenName(Z_Construct_UFunction_USequencerTools_CaptureRange(), "CaptureRange"); // 256450413
 				OuterClass->AddFunctionToFunctionMapWithOverriddenName(Z_Construct_UFunction_USequencerTools_ResetCapture(), "ResetCapture"); // 410184122
@@ -289,6 +289,18 @@ PRAGMA_ENABLE_DEPRECATION_WARNINGS
 				MetaData->SetValue(NewProp_bScaleCapturedRange, TEXT("Keywords"), TEXT("Scale Capture Range Only"));
 				MetaData->SetValue(NewProp_bScaleCapturedRange, TEXT("ModuleRelativePath"), TEXT("Public/SequencerTools/USequencerTools.h"));
 				MetaData->SetValue(NewProp_bScaleCapturedRange, TEXT("ToolTip"), TEXT("Scale selected keys"));
+				MetaData->SetValue(NewProp_ZCurve, TEXT("Category"), TEXT("Curve"));
+				MetaData->SetValue(NewProp_ZCurve, TEXT("ModuleRelativePath"), TEXT("Public/SequencerTools/USequencerTools.h"));
+				MetaData->SetValue(NewProp_YCurve, TEXT("Category"), TEXT("Curve"));
+				MetaData->SetValue(NewProp_YCurve, TEXT("ModuleRelativePath"), TEXT("Public/SequencerTools/USequencerTools.h"));
+				MetaData->SetValue(NewProp_XCurve, TEXT("Category"), TEXT("Curve"));
+				MetaData->SetValue(NewProp_XCurve, TEXT("ModuleRelativePath"), TEXT("Public/SequencerTools/USequencerTools.h"));
+				MetaData->SetValue(NewProp_Scaling, TEXT("Category"), TEXT("Transform"));
+				MetaData->SetValue(NewProp_Scaling, TEXT("ModuleRelativePath"), TEXT("Public/SequencerTools/USequencerTools.h"));
+				MetaData->SetValue(NewProp_Rotation, TEXT("Category"), TEXT("Transform"));
+				MetaData->SetValue(NewProp_Rotation, TEXT("ModuleRelativePath"), TEXT("Public/SequencerTools/USequencerTools.h"));
+				MetaData->SetValue(NewProp_Location, TEXT("Category"), TEXT("Transform"));
+				MetaData->SetValue(NewProp_Location, TEXT("ModuleRelativePath"), TEXT("Public/SequencerTools/USequencerTools.h"));
 				MetaData->SetValue(NewProp_ToFrame, TEXT("Category"), TEXT("Parameters"));
 				MetaData->SetValue(NewProp_ToFrame, TEXT("DisplayName"), TEXT("To Frame"));
 				MetaData->SetValue(NewProp_ToFrame, TEXT("Keywords"), TEXT("To Frame"));
@@ -297,25 +309,13 @@ PRAGMA_ENABLE_DEPRECATION_WARNINGS
 				MetaData->SetValue(NewProp_FromFrame, TEXT("DisplayName"), TEXT("From Frame"));
 				MetaData->SetValue(NewProp_FromFrame, TEXT("Keywords"), TEXT("From Frame"));
 				MetaData->SetValue(NewProp_FromFrame, TEXT("ModuleRelativePath"), TEXT("Public/SequencerTools/USequencerTools.h"));
-				MetaData->SetValue(NewProp_Z, TEXT("Category"), TEXT("Curve Parameters"));
-				MetaData->SetValue(NewProp_Z, TEXT("ModuleRelativePath"), TEXT("Public/SequencerTools/USequencerTools.h"));
-				MetaData->SetValue(NewProp_Y, TEXT("Category"), TEXT("Curve Parameters"));
-				MetaData->SetValue(NewProp_Y, TEXT("ModuleRelativePath"), TEXT("Public/SequencerTools/USequencerTools.h"));
-				MetaData->SetValue(NewProp_X, TEXT("Category"), TEXT("Curve Parameters"));
-				MetaData->SetValue(NewProp_X, TEXT("ModuleRelativePath"), TEXT("Public/SequencerTools/USequencerTools.h"));
-				MetaData->SetValue(NewProp_Scaling, TEXT("Category"), TEXT("Transform Parameters"));
-				MetaData->SetValue(NewProp_Scaling, TEXT("ModuleRelativePath"), TEXT("Public/SequencerTools/USequencerTools.h"));
-				MetaData->SetValue(NewProp_Rotation, TEXT("Category"), TEXT("Transform Parameters"));
-				MetaData->SetValue(NewProp_Rotation, TEXT("ModuleRelativePath"), TEXT("Public/SequencerTools/USequencerTools.h"));
-				MetaData->SetValue(NewProp_Location, TEXT("Category"), TEXT("Transform Parameters"));
-				MetaData->SetValue(NewProp_Location, TEXT("ModuleRelativePath"), TEXT("Public/SequencerTools/USequencerTools.h"));
 #endif
 			}
 		}
 		check(OuterClass->GetClass());
 		return OuterClass;
 	}
-	IMPLEMENT_CLASS(USequencerTools, 2268921488);
+	IMPLEMENT_CLASS(USequencerTools, 3606234300);
 	static FCompiledInDefer Z_CompiledInDefer_UClass_USequencerTools(Z_Construct_UClass_USequencerTools, &USequencerTools::StaticClass, TEXT("/Script/FaustTools"), TEXT("USequencerTools"), false, nullptr, nullptr, nullptr);
 	DEFINE_VTABLE_PTR_HELPER_CTOR(USequencerTools);
 	void USupport::StaticRegisterNativesUSupport()
@@ -363,7 +363,7 @@ PRAGMA_ENABLE_DEPRECATION_WARNINGS
 			ReturnPackage = CastChecked<UPackage>(StaticFindObjectFast(UPackage::StaticClass(), nullptr, FName(TEXT("/Script/FaustTools")), false, false));
 			ReturnPackage->SetPackageFlags(PKG_CompiledIn | 0x00000040);
 			FGuid Guid;
-			Guid.A = 0xB1369CD1;
+			Guid.A = 0xC9593358;
 			Guid.B = 0x3D8CF95A;
 			Guid.C = 0x00000000;
 			Guid.D = 0x00000000;

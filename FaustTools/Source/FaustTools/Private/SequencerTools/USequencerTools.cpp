@@ -15,7 +15,6 @@ USequencerTools::USequencerTools()
 	ScaleRightValue = 1.f;
 	OldScaleRightValue = ScaleRightValue;
 	Scale = MakeShared<UScale>();
-	Sequencer = Cast<ULevelSequence>(USupport::GetAssetWithOpenedEditor(ULevelSequence::StaticClass()));
 }
 
 void USequencerTools::PreEditChange(UProperty* PropertyAboutToChange)
@@ -135,7 +134,7 @@ void USequencerTools::OnToolClosed()
 void USequencerTools::CaptureRange()
 {
 	ResetCapture();
-	/*Sequencer = Cast<ULevelSequence>(USupport::GetAssetWithOpenedEditor(ULevelSequence::StaticClass()));*/
+	Sequencer = Cast<ULevelSequence>(USupport::GetAssetWithOpenedEditor(ULevelSequence::StaticClass()));
 	if (Sequencer->IsValidLowLevel())
 	{
 		FSelectionIterator Sel = GEditor->GetSelectedActorIterator();
@@ -150,6 +149,9 @@ void USequencerTools::CaptureRange()
 					GEditor->BeginTransaction(FText::FromString("Capture Range"));
 					TransformSection->Modify();
 					
+					if (FromFrame == ToFrame)
+						return;
+
 					float Step = Sequencer->GetMovieScene()->GetFixedFrameInterval();
 					float LastTime = TransformSection->GetEndTime() + Step;
 					float Frames = FMath::RoundToFloat(LastTime / Step);
@@ -203,8 +205,6 @@ void USequencerTools::ResetCapture()
 	OldScaleLeftValue = ScaleLeftValue;
 	ScaleRightValue = 1.f;
 	OldScaleRightValue = ScaleRightValue;
-
-	
 }
 
 void USequencerTools::GetInfoFromTransformSection(UMovieScene3DTransformSection * TransformSection, float FromTime, float ToTime, CustomTransform& Transform, TArray <float>& UnsortedTimes, TArray <float>& UnsortedValues)
@@ -302,10 +302,10 @@ void USequencerTools::GetTransformAndCurves(TArray<TransformType>& TransformType
 	if (Scaling)
 		TransformTypes.Add(TransformType::Scal);
 
-	if (X)
+	if (XCurve)
 		Axises.Add(EAxis::Type::X);
-	if (Y)
+	if (YCurve)
 		Axises.Add(EAxis::Type::Y);
-	if (Z)
+	if (ZCurve)
 		Axises.Add(EAxis::Type::Z);
 }
