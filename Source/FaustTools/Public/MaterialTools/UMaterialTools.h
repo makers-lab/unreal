@@ -19,6 +19,15 @@
 
 #include "UMaterialTools.generated.h"
 
+USTRUCT(Blueprintable)
+struct FActorInstance
+{
+	GENERATED_BODY()
+	UMaterialInstanceConstant* Instance;
+	AActor* Actor;
+	int32 MaterialD;
+};
+
 
 UCLASS(Blueprintable)
 class UMaterialTools : public UFaustToolsBaseClass
@@ -28,18 +37,21 @@ public:
 	UMaterialInstanceConstant* CreateAssetByParentMaterial(UMaterial* ParentMaterial, UMaterialInstanceConstantFactoryNew* Factory, FString* PathToAsset, FString* AssetName);
 	TSet<UMaterial*> GetSelectedActorMaterials();
 	TSet<UMaterial*> GetSelectedMaterialsInContentBrowser();
-
+	
 	UMaterialTools();
 
 	virtual void PreEditChange(UProperty* PropertyAboutToChange) override;
 	virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
 	virtual void OnToolClosed() override;
-
+	
+	// List of existing material instance
+	TMap< FString, UMaterialInstanceConstant* > InstanceList;
+	
 	UPROPERTY(EditAnywhere, Category = "Material for instance")
 	UMaterial* BaseMaterialForInstance;
 
 	UFUNCTION(Exec)
-		void CreateInstance();
+	void CreateInstance();
 
 	static void NotificationBox(FString String, float FadeIn = 0.1f, float Expire = 1.5, float FadeOut = 1.f);
 

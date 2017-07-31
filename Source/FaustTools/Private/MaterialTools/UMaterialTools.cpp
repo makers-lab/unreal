@@ -52,16 +52,18 @@ void UMaterialTools::OnToolClosed()
 
 
 void UMaterialTools::CreateInstance()
-{
+{		
+		InstanceList.Empty();
+		TArray<FActorInstance> ActorsMaterial;
 		TSet<UMaterial*> ContentSelectedMaterials = GetSelectedMaterialsInContentBrowser();
 		TSet<UMaterial*> ActorSelectedMaterials = GetSelectedActorMaterials();
-
 
 		// Create an appropriate and unique name 
 		FString Name;
 		FString PackageName;
 		FString CurrentInstanceName;
 		FString InstanceName;
+
 
 		int32 count = 0;
 
@@ -95,15 +97,11 @@ void UMaterialTools::CreateInstance()
 				{
 					AActor *act = Cast<AActor>(*it);
 					UE_LOG(LogTemp, Display, TEXT("Actor %s "), *act->GetName());
-			
-						
-					FString NewFolder = FPaths::GetPath(PackageName);
-		
-					FString FullPath = FPaths::GameContentDir()+"MaterialInstanceFolder";
-					
-					FString FullPath2 = IFileManager::Get().ConvertToAbsolutePathForExternalAppForRead(*FullPath);
+	
+					FString FullPath;
 
-					FullPath = "/Game/MaterialInstanceFolder/" + act->GetHumanReadableName();
+
+
 
 					if (ASkeletalMeshActor* SkelMeshActor = Cast<ASkeletalMeshActor>(act))
 					{
@@ -124,21 +122,15 @@ void UMaterialTools::CreateInstance()
 								
 								UMaterial* material = m.MaterialInterface->GetMaterial();
 								Name = material->GetName();
-								
 								UTexture* Texture = material->BaseColor.Expression->GetReferencedTexture();
-
 								SkelMeshActor->GetSkeletalMeshComponent()->SetMaterial(materialCounter, nullptr);
 								FullPath = SkelMeshActor->GetSkeletalMeshComponent()->SkeletalMesh->GetPathName();
 
-								Name = SkelMeshActor->GetSkeletalMeshComponent()->SkeletalMesh->GetExporterName().ToString();
-
-								Name = SkelMeshActor->GetSkeletalMeshComponent()->SkeletalMesh->GetFullName();
-
-								 SkelMeshActor->GetSkeletalMeshComponent()->SkeletalMesh->AppendName(Name);
-
-								FullPath.RemoveFromEnd(SkelMeshActor->GetSkeletalMeshComponent()->SkeletalMesh->GetFName().ToString());
-
-
+								int32 pointer = 0;
+								FullPath.FindLastChar('/', pointer);
+								//pointer = FullPath.Find("/", ESearchCase::IgnoreCase, ESearchDir::FromEnd,20);
+								auto size = FullPath.GetAllocatedSize();
+								FullPath.RemoveAt(pointer, (size/3)-pointer, true);
 
 								UMaterialInstanceConstant* instance = CreateAssetByParentMaterial(material, Factory, &FullPath, &Name);
 
@@ -161,7 +153,7 @@ void UMaterialTools::CreateInstance()
 						act->GetComponents<UStaticMeshComponent>(actorComponents);
 						UE_LOG(LogTemp, Display, TEXT("contains %d components\n"), actorComponents.Num());
 
-
+						
 						// get materials from each component and add to a TSet
 						for (auto component : actorComponents)
 						{
@@ -241,36 +233,57 @@ TSet<UMaterial*> UMaterialTools::GetSelectedActorMaterials()
 
 UMaterialInstanceConstant*  UMaterialTools::CreateAssetByParentMaterial(UMaterial* ParentMaterial , UMaterialInstanceConstantFactoryNew* Factory,  FString* PathToAsset , FString* AssetName)
 {
-	
-	/*FString RelativePath = FPaths::GameContentDir();
 
-	FString FullPathName = IFileManager::Get().ConvertToAbsolutePathForExternalAppForRead(*RelativePath) + FString("MaterialInstanceFolder/") + act->GetHumanReadableName() + FString("/") + *AssetName + FString("_Instance.uasset");
+
+	PathToAsset->Append("/MaterialInstance");
+	AssetName->Append("_Instance");
+	FString AbsoluteDirPath = FPaths::GameContentDir();
+
+	FString RelativePath = *PathToAsset;
+  
+	 int32 pointer = RelativePath.Find("/", ESearchCase::IgnoreCase, ESearchDir::FromStart, 1);
+
+	//pointer = FullPath.Find("/", ESearchCase::IgnoreCase, ESearchDir::FromEnd,20);
+
+	 RelativePath.RemoveAt(0, pointer+1, true);
+
+	 AbsoluteDirPath.Append(RelativePath);
+
+	FString FullPathName = IFileManager::Get().ConvertToAbsolutePathForExternalAppForRead(*AbsoluteDirPath)+"/"+ *AssetName + FString(".uasset");
 
 
 	if (FPlatformFileManager::Get().GetPlatformFile().FileExists(*FullPathName))
-
-		UMaterialTools::NotificationBox(FString("Deleted Files "));
 	bool deleted = FPlatformFileManager::Get().GetPlatformFile().DeleteFile(*FullPathName);
 
-	if (deleted)
-		UMaterialTools::NotificationBox(FString("Created New Files "));
-	*/
 
 	FAssetToolsModule& AssetToolsModule = FModuleManager::GetModuleChecked<FAssetToolsModule>("AssetTools");
-	UObject* NewAsset = AssetToolsModule.Get().CreateAsset(*AssetName + "_Instance", *PathToAsset, UMaterialInstanceConstant::StaticClass(), Factory);
 
-	if (NewAsset != nullptr)
+	UMaterialInstanceConstant** KeyExist = nullptr;
+	KeyExist = InstanceList.Find(FullPathName);
+
+	if (KeyExist == nullptr)
 	{
-		UMaterialInstanceConstant* instance = (UMaterialInstanceConstant*)NewAsset;
-		if (ParentMaterial->BaseColor.Expression != nullptr)
+		UObject* NewAsset = AssetToolsModule.Get().CreateAsset(*AssetName, *PathToAsset, UMaterialInstanceConstant::StaticClass(), Factory);
+
+
+		if (NewAsset != nullptr)
 		{
-			UTexture* Texture = ParentMaterial->BaseColor.Expression->GetReferencedTexture();
-			instance->SetTextureParameterValueEditorOnly("Texture", Texture);
+			UMaterialInstanceConstant* instance = (UMaterialInstanceConstant*)NewAsset;
+			if (ParentMaterial->BaseColor.Expression != nullptr)
+			{
+				UTexture* Texture = ParentMaterial->BaseColor.Expression->GetReferencedTexture();
+				instance->SetTextureParameterValueEditorOnly("Texture", Texture);
+			}
+
+			InstanceList.Add(FullPathName, instance);
+
+			return instance;
 		}
-		return instance;
+		else
+			return nullptr;
 	}
 	else
-		return nullptr;
+		return *KeyExist;
 }
 
 TSet<UMaterial*> UMaterialTools::GetSelectedMaterialsInContentBrowser()
