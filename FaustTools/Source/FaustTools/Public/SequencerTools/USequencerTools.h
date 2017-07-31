@@ -77,24 +77,18 @@ private:
 
 	CustomTransform TransformToEdit;
 
-	void GetValuesAndTimesToEditFromCurve(FRichCurve Curve, float FromTime, float ToTime, TArray<float>& OutValues, TArray<float>& OutTimes, TArray<int32>& OutIndexes);
+	void GetInfoFromCurve(FRichCurve Curve, float FromTime, float ToTime, TArray<float>& OutValues, TArray<float>& OutTimes, TArray<int32>& OutIndexes);
 	void GetTransformAndCurves(TArray<TransformType>& TransformTypes, TArray<EAxis::Type>& Axises);
-
-	TMap<EAxis::Type, CustomTransform> CurvesValuesToEdit;
 
 	TArray<TransformType> TransformTypes;
 	TArray<EAxis::Type> Axises;
 
-	TArray<float> ValuesToEdit;
-	TArray<float> TimesToEdit;
 
 	float MinValue;
 	float MaxValue;
 
 	float MaxTime;
 	float MinTime;
-
-	bool bWasCaptured = false;
 };
 
 

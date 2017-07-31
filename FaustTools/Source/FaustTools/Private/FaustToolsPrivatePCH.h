@@ -27,20 +27,20 @@ struct Transform
 
 struct CustomTransform
 {
-	Transform Locaion;
+	Transform Location;
 	Transform Rotation;
 	Transform Scale;
 	void Reset()
 	{
-		Locaion.X.Indexes.Empty();
-		Locaion.X.Times.Empty();
-		Locaion.X.Values.Empty();
-		Locaion.Y.Indexes.Empty();
-		Locaion.Y.Times.Empty();
-		Locaion.Y.Values.Empty();
-		Locaion.Z.Indexes.Empty();
-		Locaion.Z.Times.Empty();
-		Locaion.Z.Values.Empty();
+		Location.X.Indexes.Empty();
+		Location.X.Times.Empty();
+		Location.X.Values.Empty();
+		Location.Y.Indexes.Empty();
+		Location.Y.Times.Empty();
+		Location.Y.Values.Empty();
+		Location.Z.Indexes.Empty();
+		Location.Z.Times.Empty();
+		Location.Z.Values.Empty();
 
 		Rotation.X.Indexes.Empty();
 		Rotation.X.Times.Empty();
