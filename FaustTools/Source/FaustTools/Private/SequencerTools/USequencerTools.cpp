@@ -147,7 +147,8 @@ void USequencerTools::CaptureRange()
 				{
 					GEditor->BeginTransaction(FText::FromString("Capture Range"));
 
-					TransformSection->TryModify();
+					TransformSection->Modify();
+					
 					float Step = Sequencer->GetMovieScene()->GetFixedFrameInterval();
 					float LastTime = TransformSection->GetEndTime() + Step;
 					float Frames = FMath::RoundToFloat(LastTime / Step);
@@ -163,116 +164,7 @@ void USequencerTools::CaptureRange()
 					TArray <float> UnsortedValues;
 					TArray <float> UnsortedTimes;
 
-					if (Location)
-					{
-						if (X)
-						{
-							GetInfoFromCurve(TransformSection->GetTranslationCurve(EAxis::X),
-								FromTime,
-								ToTime,
-								TransformToEdit.Location.X.Values,
-								TransformToEdit.Location.X.Times,
-								TransformToEdit.Location.X.Indexes);
-							UnsortedValues += TransformToEdit.Location.X.Values;
-							UnsortedTimes += TransformToEdit.Location.X.Times;
-						}
-						if (Y)
-						{
-							GetInfoFromCurve(TransformSection->GetTranslationCurve(EAxis::Y),
-								FromTime,
-								ToTime,
-								TransformToEdit.Location.Y.Values,
-								TransformToEdit.Location.Y.Times,
-								TransformToEdit.Location.Y.Indexes);
-							UnsortedValues += TransformToEdit.Location.Y.Values;
-							UnsortedTimes += TransformToEdit.Location.Y.Times;
-						}
-						if (Z)
-						{
-							GetInfoFromCurve(TransformSection->GetTranslationCurve(EAxis::Z),
-								FromTime,
-								ToTime,
-								TransformToEdit.Location.Z.Values,
-								TransformToEdit.Location.Z.Times,
-								TransformToEdit.Location.Z.Indexes);
-							UnsortedValues += TransformToEdit.Location.Z.Values;
-							UnsortedTimes += TransformToEdit.Location.Z.Times;
-						}
-					}
-
-					if (Rotation)
-					{
-						if (X)
-						{
-							GetInfoFromCurve(TransformSection->GetRotationCurve(EAxis::X),
-								FromTime,
-								ToTime,
-								TransformToEdit.Rotation.X.Values,
-								TransformToEdit.Rotation.X.Times,
-								TransformToEdit.Rotation.X.Indexes);
-							UnsortedValues += TransformToEdit.Rotation.X.Values;
-							UnsortedTimes += TransformToEdit.Rotation.X.Times;
-						}
-						if (Y)
-						{
-							GetInfoFromCurve(TransformSection->GetRotationCurve(EAxis::Y),
-								FromTime,
-								ToTime,
-								TransformToEdit.Rotation.Y.Values,
-								TransformToEdit.Rotation.Y.Times,
-								TransformToEdit.Rotation.Y.Indexes);
-							UnsortedValues += TransformToEdit.Rotation.Y.Values;
-							UnsortedTimes += TransformToEdit.Rotation.Y.Times;
-						}
-						if (Z)
-						{
-							GetInfoFromCurve(TransformSection->GetRotationCurve(EAxis::Z),
-								FromTime,
-								ToTime,
-								TransformToEdit.Rotation.Z.Values,
-								TransformToEdit.Rotation.Z.Times,
-								TransformToEdit.Rotation.Z.Indexes);
-							UnsortedValues += TransformToEdit.Rotation.Z.Values;
-							UnsortedTimes += TransformToEdit.Rotation.Z.Times;
-						}
-					}
-
-					if (Scaling)
-					{
-						if (X)
-						{
-							GetInfoFromCurve(TransformSection->GetScaleCurve(EAxis::X),
-								FromTime,
-								ToTime,
-								TransformToEdit.Scale.X.Values,
-								TransformToEdit.Scale.X.Times,
-								TransformToEdit.Scale.X.Indexes);
-							UnsortedValues += TransformToEdit.Scale.X.Values;
-							UnsortedTimes += TransformToEdit.Scale.X.Times;
-						}
-						if (Y)
-						{
-							GetInfoFromCurve(TransformSection->GetScaleCurve(EAxis::Y),
-								FromTime,
-								ToTime,
-								TransformToEdit.Scale.Y.Values,
-								TransformToEdit.Scale.Y.Times,
-								TransformToEdit.Scale.Y.Indexes);
-							UnsortedValues += TransformToEdit.Scale.Y.Values;
-							UnsortedTimes += TransformToEdit.Scale.Y.Times;
-						}
-						if (Z)
-						{
-							GetInfoFromCurve(TransformSection->GetScaleCurve(EAxis::Z),
-								FromTime,
-								ToTime,
-								TransformToEdit.Scale.Z.Values,
-								TransformToEdit.Scale.Z.Times,
-								TransformToEdit.Scale.Z.Indexes);
-							UnsortedValues += TransformToEdit.Scale.Z.Values;
-							UnsortedTimes += TransformToEdit.Scale.Z.Times;
-						}
-					}
+					GetInfoFromTransformSection(TransformSection, FromTime, ToTime, TransformToEdit, UnsortedTimes, UnsortedValues);
 				
 					if(UnsortedTimes.Num() && UnsortedValues.Num())
 					{
@@ -283,8 +175,8 @@ void USequencerTools::CaptureRange()
 						UnsortedTimes.Sort();
 						MaxTime = UnsortedTimes[UnsortedTimes.Num() - 1];
 						MinTime = UnsortedTimes[0];
-						GEditor->EndTransaction();
 					}
+					GEditor->EndTransaction();
 				}
 			}
 			else USupport::NotificationBox(FString("Select an Actor in Level Sequence"));
@@ -293,26 +185,134 @@ void USequencerTools::CaptureRange()
 	else USupport::NotificationBox(FString("Open Level Sequence Editor to work with"));
 }
 
+
 void USequencerTools::ResetCapture()
 {
-	TransformTypes.Empty();
-	Axises.Empty();
 	TransformToEdit.Reset();
+	MinTime = 0.f;
+	MaxTime = 0.f;
+	MinValue = 0.f;
+	MaxValue = 0.f;
+
+	ScaleTopValue = 1.f;
+	OldScaleTopValue = ScaleTopValue;
+	ScaleBotValue = 1.f;
+	OldScaleBotValue = ScaleBotValue;
+	ScaleLeftValue = 1.f;
+	OldScaleLeftValue = ScaleLeftValue;
+	ScaleRightValue = 1.f;
+	OldScaleRightValue = ScaleRightValue;
+
+	
 }
 
-void USequencerTools::GetInfoFromCurve(FRichCurve Curve, float FromTime, float ToTime, TArray<float>& OutValues, TArray<float>& OutTimes, TArray<int32>& OutIndexes)
+void USequencerTools::Apply()
 {
-	OutValues.Empty();
-	OutTimes.Empty();
-	OutIndexes.Empty();
-	auto Keys = Curve.Keys;
-	for (int32 Index = 0; Index < Keys.Num(); Index++)
+	Sequencer = Cast<ULevelSequence>(USupport::GetAssetWithOpenedEditor(ULevelSequence::StaticClass()));
+	if (Sequencer->IsValidLowLevel())
 	{
-		if (Keys[Index].Time >= FromTime && Keys[Index].Time <= ToTime)
+		FSelectionIterator Sel = GEditor->GetSelectedActorIterator();
+		for (Sel; Sel; ++Sel)
 		{
-			OutTimes.Add(Keys[Index].Time);
-			OutValues.Add(Keys[Index].Value);
-			OutIndexes.Add(Index);
+			AActor * SelActor = Cast<AActor >(*Sel);
+			if (SelActor->IsValidLowLevel())
+			{
+				TransformSection = USupport::GetTransformSectionFromActor(Sequencer, SelActor);
+				if (TransformSection->IsValidLowLevel())
+				{
+					GEditor->BeginTransaction(FText::FromString("Capture Range"));
+
+					TransformSection->Modify();
+
+					GEditor->EndTransaction();
+				}
+			}
+			else USupport::NotificationBox(FString("Select an Actor in Level Sequence"));
+		}
+	}
+	else USupport::NotificationBox(FString("Open Level Sequence Editor to work with"));
+}
+
+void USequencerTools::GetInfoFromTransformSection(UMovieScene3DTransformSection * TransformSection, float FromTime, float ToTime, CustomTransform& Transform, TArray <float>& UnsortedTimes, TArray <float>& UnsortedValues)
+{
+	if(Location)
+	{
+		for (auto Axis : Axises)
+		{
+			auto Keys = TransformSection->GetTranslationCurve(Axis).Keys;
+			for (int32 Index = 0; Index < Keys.Num(); Index++)
+			{
+				if (Keys[Index].Time < FromTime)
+				{
+					Transform.Location.GetCurve(Axis).HandlesLeftOutOfRange.Add(TransformSection->GetTranslationCurve(Axis).FindKey(Keys[Index].Time));
+				}
+				if (Keys[Index].Time >= FromTime && Keys[Index].Time <= ToTime)
+				{
+					Transform.Location.GetCurve(Axis).HandlesToEdit.Add(TransformSection->GetTranslationCurve(Axis).FindKey(Keys[Index].Time));
+					Transform.Location.GetCurve(Axis).Indexes.Add(Index);
+					Transform.Location.GetCurve(Axis).Times.Add(Keys[Index].Time);
+					UnsortedValues.Add(Keys[Index].Value);
+					UnsortedTimes.Add(Keys[Index].Time);
+				}
+				if (Keys[Index].Time > ToTime)
+				{
+					Transform.Location.GetCurve(Axis).HandlesRightOutOfRange.Add(TransformSection->GetTranslationCurve(Axis).FindKey(Keys[Index].Time));
+				}
+			}
+		}
+	}
+
+	if (Rotation)
+	{
+		for (auto Axis : Axises)
+		{
+			auto Keys = TransformSection->GetRotationCurve(Axis).Keys;
+			for (int32 Index = 0; Index < Keys.Num(); Index++)
+			{
+				if (Keys[Index].Time < FromTime)
+				{
+					Transform.Rotation.GetCurve(Axis).HandlesLeftOutOfRange.Add(TransformSection->GetRotationCurve(Axis).FindKey(Keys[Index].Time));
+				}
+				if (Keys[Index].Time >= FromTime && Keys[Index].Time <= ToTime)
+				{
+					Transform.Rotation.GetCurve(Axis).HandlesToEdit.Add(TransformSection->GetRotationCurve(Axis).FindKey(Keys[Index].Time));
+					Transform.Rotation.GetCurve(Axis).Indexes.Add(Index);
+					Transform.Rotation.GetCurve(Axis).Times.Add(Keys[Index].Time);
+					UnsortedValues.Add(Keys[Index].Value);
+					UnsortedTimes.Add(Keys[Index].Time);
+				}
+				if (Keys[Index].Time > ToTime)
+				{
+					Transform.Rotation.GetCurve(Axis).HandlesRightOutOfRange.Add(TransformSection->GetRotationCurve(Axis).FindKey(Keys[Index].Time));
+				}
+			}
+		}
+	}
+
+	if (Scaling)
+	{
+		for (auto Axis : Axises)
+		{
+			auto Keys = TransformSection->GetScaleCurve(Axis).Keys;
+			for (int32 Index = 0; Index < Keys.Num(); Index++)
+			{
+				if (Keys[Index].Time < FromTime)
+				{
+					Transform.Scale.GetCurve(Axis).HandlesLeftOutOfRange.Add(TransformSection->GetScaleCurve(Axis).FindKey(Keys[Index].Time));
+				}
+				if (Keys[Index].Time >= FromTime && Keys[Index].Time <= ToTime)
+				{
+					Transform.Scale.GetCurve(Axis).HandlesToEdit.Add(TransformSection->GetScaleCurve(Axis).FindKey(Keys[Index].Time));
+					Transform.Scale.GetCurve(Axis).Indexes.Add(Index);
+					Transform.Scale.GetCurve(Axis).Times.Add(Keys[Index].Time);
+					UnsortedValues.Add(Keys[Index].Value);
+					UnsortedTimes.Add(Keys[Index].Time);
+				}
+				if (Keys[Index].Time > ToTime)
+				{
+					Transform.Scale.GetCurve(Axis).HandlesRightOutOfRange.Add(TransformSection->GetScaleCurve(Axis).FindKey(Keys[Index].Time));
+				}
+			}
 		}
 	}
 }
@@ -326,7 +326,7 @@ void USequencerTools::GetTransformAndCurves(TArray<TransformType>& TransformType
 	if (Rotation)
 		TransformTypes.Add(TransformType::Rot);
 	if (Scaling)
-		TransformTypes.Add(TransformType::Sca);
+		TransformTypes.Add(TransformType::Scal);
 
 	if (X)
 		Axises.Add(EAxis::Type::X);

@@ -8,7 +8,7 @@ enum TransformType
 {
 	Loc,
 	Rot,
-	Sca
+	Scal
 };
 
 struct Curve
@@ -16,6 +16,19 @@ struct Curve
 	TArray<float> Values;
 	TArray<float> Times;
 	TArray<int32> Indexes;
+	TArray<FKeyHandle> HandlesToEdit;
+	TArray<FKeyHandle> HandlesLeftOutOfRange;
+	TArray<FKeyHandle> HandlesRightOutOfRange;
+
+	void Reset()
+	{
+		Values.Empty();
+		Times.Empty();
+		Indexes.Empty();
+		HandlesToEdit.Empty();
+		HandlesLeftOutOfRange.Empty();
+		HandlesRightOutOfRange.Empty();
+	}
 };
 
 struct Transform
@@ -23,6 +36,26 @@ struct Transform
 	Curve X;
 	Curve Y;
 	Curve Z;
+
+	FORCEINLINE Curve& GetCurve(EAxis::Type Axis)
+	{
+		switch (Axis)
+		{
+		case EAxis::None:
+			break;
+		case EAxis::X:
+			return X;
+			break;
+		case EAxis::Y:
+			return Y;
+			break;
+		case EAxis::Z:
+			return Z;
+			break;
+		default:
+			break;
+		}
+	}
 };
 
 struct CustomTransform
@@ -30,36 +63,19 @@ struct CustomTransform
 	Transform Location;
 	Transform Rotation;
 	Transform Scale;
+
 	void Reset()
 	{
-		Location.X.Indexes.Empty();
-		Location.X.Times.Empty();
-		Location.X.Values.Empty();
-		Location.Y.Indexes.Empty();
-		Location.Y.Times.Empty();
-		Location.Y.Values.Empty();
-		Location.Z.Indexes.Empty();
-		Location.Z.Times.Empty();
-		Location.Z.Values.Empty();
+		Location.X.Reset();
+		Location.Y.Reset();
+		Location.Z.Reset();
 
-		Rotation.X.Indexes.Empty();
-		Rotation.X.Times.Empty();
-		Rotation.X.Values.Empty();
-		Rotation.Y.Indexes.Empty();
-		Rotation.Y.Times.Empty();
-		Rotation.Y.Values.Empty();
-		Rotation.Z.Indexes.Empty();
-		Rotation.Z.Times.Empty();
-		Rotation.Z.Values.Empty();
+		Rotation.X.Reset();
+		Rotation.Y.Reset();
+		Rotation.Z.Reset();
 
-		Scale.X.Indexes.Empty();
-		Scale.X.Times.Empty();
-		Scale.X.Values.Empty();
-		Scale.Y.Indexes.Empty();
-		Scale.Y.Times.Empty();
-		Scale.Y.Values.Empty();
-		Scale.Z.Indexes.Empty();
-		Scale.Z.Times.Empty();
-		Scale.Z.Values.Empty();
+		Scale.X.Reset();
+		Scale.Y.Reset();
+		Scale.Z.Reset();
 	}
 };

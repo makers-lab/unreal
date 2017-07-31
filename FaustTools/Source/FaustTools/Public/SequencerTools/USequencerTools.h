@@ -26,8 +26,12 @@ public:
 
 	UFUNCTION(Exec)
 	void CaptureRange();
+
 	UFUNCTION(Exec)
 	void ResetCapture();
+
+	UFUNCTION(Exec)
+	void Apply();
 
 	UPROPERTY(EditAnywhere, Category = "Transform Parameters")
 	bool Location;
@@ -77,7 +81,14 @@ private:
 
 	CustomTransform TransformToEdit;
 
-	void GetInfoFromCurve(FRichCurve Curve, float FromTime, float ToTime, TArray<float>& OutValues, TArray<float>& OutTimes, TArray<int32>& OutIndexes);
+	void GetInfoFromTransformSection(
+		UMovieScene3DTransformSection * TransformSection, 
+		float FromTime, 
+		float ToTime, 
+		CustomTransform& Transform, 
+		TArray <float>& UnsortedTimes, 
+		TArray <float>& UnsortedValues);
+
 	void GetTransformAndCurves(TArray<TransformType>& TransformTypes, TArray<EAxis::Type>& Axises);
 
 	TArray<TransformType> TransformTypes;

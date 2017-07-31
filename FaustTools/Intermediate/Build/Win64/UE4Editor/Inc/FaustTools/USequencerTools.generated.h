@@ -15,6 +15,14 @@ PRAGMA_DISABLE_DEPRECATION_WARNINGS
 
 #define SequencerPlugin_Plugins_FaustTools_Source_FaustTools_Public_SequencerTools_USequencerTools_h_18_RPC_WRAPPERS \
  \
+	DECLARE_FUNCTION(execApply) \
+	{ \
+		P_FINISH; \
+		P_NATIVE_BEGIN; \
+		this->Apply(); \
+		P_NATIVE_END; \
+	} \
+ \
 	DECLARE_FUNCTION(execResetCapture) \
 	{ \
 		P_FINISH; \
@@ -33,6 +41,14 @@ PRAGMA_DISABLE_DEPRECATION_WARNINGS
 
 
 #define SequencerPlugin_Plugins_FaustTools_Source_FaustTools_Public_SequencerTools_USequencerTools_h_18_RPC_WRAPPERS_NO_PURE_DECLS \
+ \
+	DECLARE_FUNCTION(execApply) \
+	{ \
+		P_FINISH; \
+		P_NATIVE_BEGIN; \
+		this->Apply(); \
+		P_NATIVE_END; \
+	} \
  \
 	DECLARE_FUNCTION(execResetCapture) \
 	{ \
