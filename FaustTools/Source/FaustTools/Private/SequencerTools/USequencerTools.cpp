@@ -15,6 +15,7 @@ USequencerTools::USequencerTools()
 	ScaleRightValue = 1.f;
 	OldScaleRightValue = ScaleRightValue;
 	Scale = MakeShared<UScale>();
+	Sequencer = Cast<ULevelSequence>(USupport::GetAssetWithOpenedEditor(ULevelSequence::StaticClass()));
 }
 
 void USequencerTools::PreEditChange(UProperty* PropertyAboutToChange)
@@ -45,6 +46,8 @@ void USequencerTools::PostEditChangeProperty(FPropertyChangedEvent& PropertyChan
 		{
 			float Delta = ScaleTopValue / OldScaleTopValue;
 			TArray<float> UnsortedValues;
+			//GEditor->BeginTransaction(FText::FromString("ScaleTop"));
+			TransformSection->Modify();
 			for (auto Type : TransformTypes)
 			{
 				for (auto Axis : Axises)
@@ -63,6 +66,7 @@ void USequencerTools::PostEditChangeProperty(FPropertyChangedEvent& PropertyChan
 		{
 			TArray<float> UnsortedValues;
 			float Delta = ScaleBotValue / OldScaleBotValue;
+			TransformSection->Modify();
 			for (auto Type : TransformTypes)
 			{
 				for (auto Axis : Axises)
@@ -81,45 +85,43 @@ void USequencerTools::PostEditChangeProperty(FPropertyChangedEvent& PropertyChan
 		{
 			TArray<float> UnsortedTimes;
 			float Delta = ScaleLeftValue / OldScaleLeftValue;
-			if(TransformTypes.Num())
+			TransformSection->Modify();
+			for (auto Type : TransformTypes)
 			{
-				for (auto Type : TransformTypes)
+				for (auto Axis : Axises)
 				{
-					for (auto Axis : Axises)
-					{
-						Scale->ScaleLeft(TransformSection, Type, Axis, TransformToEdit, MaxTime, MinTime, Delta, UnsortedTimes, bScaleCapturedRange);
-					}
+					Scale->ScaleLeft(TransformSection, Type, Axis, TransformToEdit, MaxTime, MinTime, Delta, UnsortedTimes, bScaleCapturedRange);
 				}
+			}
 
-				if (UnsortedTimes.Num())
-				{
-					UnsortedTimes.Sort();
-					MinTime = UnsortedTimes[0];
-					OldScaleLeftValue = ScaleLeftValue;
-				}
+			if (UnsortedTimes.Num())
+			{
+				UnsortedTimes.Sort();
+				MinTime = UnsortedTimes[0];
+				OldScaleLeftValue = ScaleLeftValue;
 			}
 		}
 		if (PropertyThatChanged->GetName() == "ScaleRightValue")
 		{
 			TArray<float> UnsortedTimes;
 			float Delta = ScaleRightValue / OldScaleRightValue;
-			if (TransformTypes.Num())
-			{
-				for (auto Type : TransformTypes)
-				{
-					for (auto Axis : Axises)
-					{
-						Scale->ScaleRight(TransformSection, Type, Axis, TransformToEdit, MaxTime, MinTime, Delta, UnsortedTimes, bScaleCapturedRange);
-					}
-				}
 
-				if (UnsortedTimes.Num())
+			TransformSection->Modify();
+			for (auto Type : TransformTypes)
+			{
+				for (auto Axis : Axises)
 				{
-					UnsortedTimes.Sort();
-					MaxTime = UnsortedTimes[UnsortedTimes.Num() - 1];
-					OldScaleRightValue = ScaleRightValue;
+					Scale->ScaleRight(TransformSection, Type, Axis, TransformToEdit, MaxTime, MinTime, Delta, UnsortedTimes, bScaleCapturedRange);
 				}
 			}
+
+			if (UnsortedTimes.Num())
+			{
+				UnsortedTimes.Sort();
+				MaxTime = UnsortedTimes[UnsortedTimes.Num() - 1];
+				OldScaleRightValue = ScaleRightValue;
+			}
+			
 		}
 	}
 	Super::PostEditChangeProperty(PropertyChangedEvent);
@@ -133,7 +135,7 @@ void USequencerTools::OnToolClosed()
 void USequencerTools::CaptureRange()
 {
 	ResetCapture();
-	Sequencer = Cast<ULevelSequence>(USupport::GetAssetWithOpenedEditor(ULevelSequence::StaticClass()));
+	/*Sequencer = Cast<ULevelSequence>(USupport::GetAssetWithOpenedEditor(ULevelSequence::StaticClass()));*/
 	if (Sequencer->IsValidLowLevel())
 	{
 		FSelectionIterator Sel = GEditor->GetSelectedActorIterator();
@@ -146,7 +148,6 @@ void USequencerTools::CaptureRange()
 				if (TransformSection->IsValidLowLevel())
 				{
 					GEditor->BeginTransaction(FText::FromString("Capture Range"));
-
 					TransformSection->Modify();
 					
 					float Step = Sequencer->GetMovieScene()->GetFixedFrameInterval();
@@ -204,33 +205,6 @@ void USequencerTools::ResetCapture()
 	OldScaleRightValue = ScaleRightValue;
 
 	
-}
-
-void USequencerTools::Apply()
-{
-	Sequencer = Cast<ULevelSequence>(USupport::GetAssetWithOpenedEditor(ULevelSequence::StaticClass()));
-	if (Sequencer->IsValidLowLevel())
-	{
-		FSelectionIterator Sel = GEditor->GetSelectedActorIterator();
-		for (Sel; Sel; ++Sel)
-		{
-			AActor * SelActor = Cast<AActor >(*Sel);
-			if (SelActor->IsValidLowLevel())
-			{
-				TransformSection = USupport::GetTransformSectionFromActor(Sequencer, SelActor);
-				if (TransformSection->IsValidLowLevel())
-				{
-					GEditor->BeginTransaction(FText::FromString("Capture Range"));
-
-					TransformSection->Modify();
-
-					GEditor->EndTransaction();
-				}
-			}
-			else USupport::NotificationBox(FString("Select an Actor in Level Sequence"));
-		}
-	}
-	else USupport::NotificationBox(FString("Open Level Sequence Editor to work with"));
 }
 
 void USequencerTools::GetInfoFromTransformSection(UMovieScene3DTransformSection * TransformSection, float FromTime, float ToTime, CustomTransform& Transform, TArray <float>& UnsortedTimes, TArray <float>& UnsortedValues)

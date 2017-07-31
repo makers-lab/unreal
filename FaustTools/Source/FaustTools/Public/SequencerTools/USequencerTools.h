@@ -30,9 +30,6 @@ public:
 	UFUNCTION(Exec)
 	void ResetCapture();
 
-	UFUNCTION(Exec)
-	void Apply();
-
 	UPROPERTY(EditAnywhere, Category = "Transform Parameters")
 	bool Location;
 	UPROPERTY(EditAnywhere, Category = "Transform Parameters")

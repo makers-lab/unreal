@@ -24,7 +24,6 @@ void EmptyLinkFunctionForGeneratedCode1FaustTools() {}
 	FAUSTTOOLS_API class UClass* Z_Construct_UClass_UMayaToUE();
 	FAUSTTOOLS_API class UClass* Z_Construct_UClass_UMotionVector_NoRegister();
 	FAUSTTOOLS_API class UClass* Z_Construct_UClass_UMotionVector();
-	FAUSTTOOLS_API class UFunction* Z_Construct_UFunction_USequencerTools_Apply();
 	FAUSTTOOLS_API class UFunction* Z_Construct_UFunction_USequencerTools_CaptureRange();
 	FAUSTTOOLS_API class UFunction* Z_Construct_UFunction_USequencerTools_ResetCapture();
 	FAUSTTOOLS_API class UClass* Z_Construct_UClass_USequencerTools_NoRegister();
@@ -178,27 +177,10 @@ PRAGMA_ENABLE_DEPRECATION_WARNINGS
 	{
 		UClass* Class = USequencerTools::StaticClass();
 		static const TNameNativePtrPair<ANSICHAR> AnsiFuncs[] = {
-			{ "Apply", (Native)&USequencerTools::execApply },
 			{ "CaptureRange", (Native)&USequencerTools::execCaptureRange },
 			{ "ResetCapture", (Native)&USequencerTools::execResetCapture },
 		};
-		FNativeFunctionRegistrar::RegisterFunctions(Class, AnsiFuncs, 3);
-	}
-	UFunction* Z_Construct_UFunction_USequencerTools_Apply()
-	{
-		UObject* Outer=Z_Construct_UClass_USequencerTools();
-		static UFunction* ReturnFunction = NULL;
-		if (!ReturnFunction)
-		{
-			ReturnFunction = new(EC_InternalUseOnlyConstructor, Outer, TEXT("Apply"), RF_Public|RF_Transient|RF_MarkAsNative) UFunction(FObjectInitializer(), NULL, 0x00020601, 65535);
-			ReturnFunction->Bind();
-			ReturnFunction->StaticLink();
-#if WITH_METADATA
-			UMetaData* MetaData = ReturnFunction->GetOutermost()->GetMetaData();
-			MetaData->SetValue(ReturnFunction, TEXT("ModuleRelativePath"), TEXT("Public/SequencerTools/USequencerTools.h"));
-#endif
-		}
-		return ReturnFunction;
+		FNativeFunctionRegistrar::RegisterFunctions(Class, AnsiFuncs, 2);
 	}
 	UFunction* Z_Construct_UFunction_USequencerTools_CaptureRange()
 	{
@@ -249,7 +231,6 @@ PRAGMA_ENABLE_DEPRECATION_WARNINGS
 				UObjectForceRegistration(OuterClass);
 				OuterClass->ClassFlags |= 0x20000080;
 
-				OuterClass->LinkChild(Z_Construct_UFunction_USequencerTools_Apply());
 				OuterClass->LinkChild(Z_Construct_UFunction_USequencerTools_CaptureRange());
 				OuterClass->LinkChild(Z_Construct_UFunction_USequencerTools_ResetCapture());
 
@@ -275,7 +256,6 @@ PRAGMA_DISABLE_DEPRECATION_WARNINGS
 				CPP_BOOL_PROPERTY_BITMASK_STRUCT(Location, USequencerTools, bool);
 				UProperty* NewProp_Location = new(EC_InternalUseOnlyConstructor, OuterClass, TEXT("Location"), RF_Public|RF_Transient|RF_MarkAsNative) UBoolProperty(FObjectInitializer(), EC_CppProperty, CPP_BOOL_PROPERTY_OFFSET(Location, USequencerTools), 0x0010000000000001, CPP_BOOL_PROPERTY_BITMASK(Location, USequencerTools), sizeof(bool), true);
 PRAGMA_ENABLE_DEPRECATION_WARNINGS
-				OuterClass->AddFunctionToFunctionMapWithOverriddenName(Z_Construct_UFunction_USequencerTools_Apply(), "Apply"); // 3255983230
 				OuterClass->AddFunctionToFunctionMapWithOverriddenName(Z_Construct_UFunction_USequencerTools_CaptureRange(), "CaptureRange"); // 256450413
 				OuterClass->AddFunctionToFunctionMapWithOverriddenName(Z_Construct_UFunction_USequencerTools_ResetCapture(), "ResetCapture"); // 410184122
 				static TCppClassTypeInfo<TCppClassTypeTraits<USequencerTools> > StaticCppClassTypeInfo;
@@ -335,7 +315,7 @@ PRAGMA_ENABLE_DEPRECATION_WARNINGS
 		check(OuterClass->GetClass());
 		return OuterClass;
 	}
-	IMPLEMENT_CLASS(USequencerTools, 2827045183);
+	IMPLEMENT_CLASS(USequencerTools, 2268921488);
 	static FCompiledInDefer Z_CompiledInDefer_UClass_USequencerTools(Z_Construct_UClass_USequencerTools, &USequencerTools::StaticClass, TEXT("/Script/FaustTools"), TEXT("USequencerTools"), false, nullptr, nullptr, nullptr);
 	DEFINE_VTABLE_PTR_HELPER_CTOR(USequencerTools);
 	void USupport::StaticRegisterNativesUSupport()
@@ -383,8 +363,8 @@ PRAGMA_ENABLE_DEPRECATION_WARNINGS
 			ReturnPackage = CastChecked<UPackage>(StaticFindObjectFast(UPackage::StaticClass(), nullptr, FName(TEXT("/Script/FaustTools")), false, false));
 			ReturnPackage->SetPackageFlags(PKG_CompiledIn | 0x00000040);
 			FGuid Guid;
-			Guid.A = 0x554B22A3;
-			Guid.B = 0xA1B0A86A;
+			Guid.A = 0xB1369CD1;
+			Guid.B = 0x3D8CF95A;
 			Guid.C = 0x00000000;
 			Guid.D = 0x00000000;
 			ReturnPackage->SetGuid(Guid);
