@@ -2,7 +2,7 @@
 
 #include "Engine.h"
 #include "Editor.h"
-#include "SlateBasics.h"
+
 
 enum TransformType
 {
@@ -52,8 +52,6 @@ struct Transform
 		case EAxis::Z:
 			return Z;
 			break;
-		default:
-			break;
 		}
 	}
 };
@@ -78,4 +76,21 @@ struct CustomTransform
 		Scale.Y.Reset();
 		Scale.Z.Reset();
 	}
+
+	FORCEINLINE Transform& GetTransform(TransformType Type)
+	{
+		switch (Type)
+		{
+		case Loc:
+			return Location;
+			break;
+		case Rot:
+			return Rotation;
+			break;
+		case Scal:
+			return Scale;
+			break;
+		}
+	}
 };
+

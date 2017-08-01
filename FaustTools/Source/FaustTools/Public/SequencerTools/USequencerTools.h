@@ -24,27 +24,57 @@ public:
 	virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
 	virtual void OnToolClosed() override;
 
+	UPROPERTY(EditAnywhere, Category = "Parameters|Frames", meta = (DisplayName = "From Frame", AllowPrivateAccess = "true"))
+		int32 FromFrame;
+	UPROPERTY(EditAnywhere, Category = "Parameters|Frames", meta = (DisplayName = "To Frame", AllowPrivateAccess = "true"))
+		int32 ToFrame; 
+	
+	UPROPERTY(EditAnywhere, Category = "Parameters|Transformation", meta = (AllowPrivateAccess = "true"))
+		bool Location;
+	UPROPERTY(EditAnywhere, Category = "Parameters|Transformation", meta = (AllowPrivateAccess = "true"))
+		bool Rotation;
+	UPROPERTY(EditAnywhere, Category = "Parameters|Transformation", meta = (AllowPrivateAccess = "true"))
+		bool Scaling;
+
+	UPROPERTY(EditAnywhere, Category = "Parameters|Transformation|Curve", meta = (DisplayName = "X", AllowPrivateAccess = "true"))
+		bool XCurve;
+	UPROPERTY(EditAnywhere, Category = "Parameters|Transformation|Curve", meta = (DisplayName = "Y", AllowPrivateAccess = "true"))
+		bool YCurve;
+	UPROPERTY(EditAnywhere, Category = "Parameters|Transformation|Curve", meta = (DisplayName = "Z", AllowPrivateAccess = "true"))
+		bool ZCurve;
+
 	
 
-	UPROPERTY(EditAnywhere, Category = "Parameters", meta = (DisplayName = "From Frame", Keywords = "From Frame"))
-	int32 FromFrame;
+	
 
-	UPROPERTY(EditAnywhere, Category = "Parameters", meta = (DisplayName = "To Frame", Keywords = "To Frame"))
-	int32 ToFrame;
+	//Filters
+	UPROPERTY(EditAnywhere, Category = "Butterworth Filter", meta = (DisplayName = "Hz", Keywords = "Hz"))
+		float Hz;
+	UPROPERTY(EditAnywhere, Category = "Filter Keys", meta = (DisplayName = "Delta", Keywords = "Delta"))
+		float Delta;
 
-	UPROPERTY(EditAnywhere, Category = "Transform")
-	bool Location;
-	UPROPERTY(EditAnywhere, Category = "Transform")
-	bool Rotation;
-	UPROPERTY(EditAnywhere, Category = "Transform")
-	bool Scaling;
+	//Scale selected keys
+	UPROPERTY(EditAnywhere, Category = "Scaling", meta = (DisplayName = "Scale Captured Range Only"))
+		bool bScaleCapturedRange;
 
-	UPROPERTY(EditAnywhere, Category = "Curve")
-	bool XCurve;
-	UPROPERTY(EditAnywhere, Category = "Curve")
-	bool YCurve;
-	UPROPERTY(EditAnywhere, Category = "Curve")
-	bool ZCurve;
+	//Scaling
+	UPROPERTY(EditAnywhere, Category = "Scaling", meta = (DisplayName = "Scale Top"))
+		float ScaleTopValue;
+	float OldScaleTopValue;
+
+	UPROPERTY(EditAnywhere, Category = "Scaling", meta = (DisplayName = "Scale Bottom"))
+		float ScaleBotValue;
+	float OldScaleBotValue;
+
+	UPROPERTY(EditAnywhere, Category = "Scaling", meta = (DisplayName = "Scale Left"))
+		float ScaleLeftValue;
+	float OldScaleLeftValue;
+
+	UPROPERTY(EditAnywhere, Category = "Scaling", meta = (DisplayName = "Scale Right"))
+		float ScaleRightValue;
+	float OldScaleRightValue;
+
+	
 
 	UFUNCTION(Exec)
 		void CaptureRange();
@@ -52,29 +82,13 @@ public:
 	UFUNCTION(Exec)
 		void ResetCapture();
 
-	//Scale selected keys
-	UPROPERTY(EditAnywhere, Category = "Scaling", meta = (DisplayName = "Scale Captured Range Only", Keywords = "Scale Capture Range Only"))
-	bool bScaleCapturedRange;
+	UFUNCTION(Exec)
+		void Butterworth();
 
-	//Scaling
-	UPROPERTY(EditAnywhere, Category = "Scaling", meta = (DisplayName = "Scale Top", Keywords = "Scale Top"))
-	float ScaleTopValue;
-	float OldScaleTopValue;
-
-	UPROPERTY(EditAnywhere, Category = "Scaling", meta = (DisplayName = "Scale Bottom", Keywords = "Scale Bottom"))
-	float ScaleBotValue;
-	float OldScaleBotValue;
-
-	UPROPERTY(EditAnywhere, Category = "Scaling", meta = (DisplayName = "Scale Left", Keywords = "Scale Left"))
-	float ScaleLeftValue;
-	float OldScaleLeftValue;
-
-	UPROPERTY(EditAnywhere, Category = "Scaling", meta = (DisplayName = "Scale Right", Keywords = "Scale Right"))
-	float ScaleRightValue;
-	float OldScaleRightValue;
+	UFUNCTION(Exec)
+		void FilterKeys();
 
 private:
-	TSharedPtr<UScale> Scale;
 	ULevelSequence * Sequencer = nullptr;
 	UMovieScene3DTransformSection * TransformSection = nullptr;
 

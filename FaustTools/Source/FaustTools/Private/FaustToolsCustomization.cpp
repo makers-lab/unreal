@@ -20,6 +20,8 @@ void FFaustToolsCustomization::CustomizeDetails(IDetailLayoutBuilder& DetailBuil
 	}
 
 	IDetailCategoryBuilder& Actions = DetailBuilder.EditCategory("Actions");
+	IDetailCategoryBuilder& Butterworth = DetailBuilder.EditCategory("Butterworth Filter");
+	IDetailCategoryBuilder& FilterKeys = DetailBuilder.EditCategory("Filter Keys");
 
 	for (UClass* Class : Classes)
 	{
@@ -32,14 +34,40 @@ void FFaustToolsCustomization::CustomizeDetails(IDetailLayoutBuilder& DetailBuil
 				const FText ButtonCaption = FText::FromString(FunctionName);
 				const FText FilteringString = FText::FromString(FunctionName);
 				const TAttribute <FText> ToolTip = FText::Format(LOCTEXT("ToolTipText", "{0}"), Function->GetToolTipText());
-				Actions.AddCustomRow(FilteringString)
-					.ValueContent()
-					[
-						SNew(SButton)
-						.Text(ButtonCaption)
-					.ToolTipText(ToolTip)
-					.OnClicked(FOnClicked::CreateStatic(&FFaustToolsCustomization::ExecuteToolCommand, &DetailBuilder, Function))
-					];
+
+				if (FunctionName == "Butterworth")
+				{
+					Butterworth.AddCustomRow(FilteringString)
+						.ValueContent()
+						[
+							SNew(SButton)
+							.Text(ButtonCaption)
+						.ToolTipText(ToolTip)
+						.OnClicked(FOnClicked::CreateStatic(&FFaustToolsCustomization::ExecuteToolCommand, &DetailBuilder, Function))
+						];
+				}
+				else if (FunctionName == "FilterKeys")
+				{
+					FilterKeys.AddCustomRow(FilteringString)
+						.ValueContent()
+						[
+							SNew(SButton)
+							.Text(ButtonCaption)
+						.ToolTipText(ToolTip)
+						.OnClicked(FOnClicked::CreateStatic(&FFaustToolsCustomization::ExecuteToolCommand, &DetailBuilder, Function))
+						];
+				}
+				else
+				{
+					Actions.AddCustomRow(FilteringString)
+						.ValueContent()
+						[
+							SNew(SButton)
+							.Text(ButtonCaption)
+						.ToolTipText(ToolTip)
+						.OnClicked(FOnClicked::CreateStatic(&FFaustToolsCustomization::ExecuteToolCommand, &DetailBuilder, Function))
+						];
+				}
 			}
 		}
 	}

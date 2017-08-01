@@ -14,5 +14,5 @@ public:
 	static UMovieScene3DTransformSection* GetTransformSectionFromActor(ULevelSequence *LevelSequence, AActor *Actor);
 	static UObject* GetAssetWithOpenedEditor(UClass *Class);
 	static void GetAssetsByClass(UClass *Class, TArray<UObject*> &Objects);
-	static void NotificationBox(FString String, float FadeIn = 0.1f, float Expire = 1.5, float FadeOut = 0.5, bool bOutputLog = true);
+	static void NotificationBox(FString String, float FadeIn = 0.1f, float Expire = 1.5, float FadeOut = 1.2f, bool bOutputLog = true);
 };

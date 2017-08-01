@@ -1,6 +1,7 @@
 #include "FaustTools/Private/FaustToolsPrivatePCH.h"
 #include "USequencerTools.h"
 #include "Scaling.h"
+#include "Filters.h"
 #include "SupportClass.h"
 
 
@@ -14,7 +15,6 @@ USequencerTools::USequencerTools()
 	OldScaleLeftValue = ScaleLeftValue;
 	ScaleRightValue = 1.f;
 	OldScaleRightValue = ScaleRightValue;
-	Scale = MakeShared<UScale>();
 }
 
 void USequencerTools::PreEditChange(UProperty* PropertyAboutToChange)
@@ -24,106 +24,109 @@ void USequencerTools::PreEditChange(UProperty* PropertyAboutToChange)
 
 void USequencerTools::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent)
 {
-	UProperty *PropertyThatChanged = PropertyChangedEvent.Property;
-	if (PropertyThatChanged)
+	if (TransformTypes.Num() && Axises.Num())
 	{
-		if (PropertyThatChanged->GetName() == "FromFrame")
+		UProperty *PropertyThatChanged = PropertyChangedEvent.Property;
+		if (PropertyThatChanged)
 		{
-			FromFrame = FromFrame;
-		}
-		if (PropertyThatChanged->GetName() == "ToFrame")
-		{
-			ToFrame = ToFrame;
-		}
-
-		if (PropertyThatChanged->GetName() == "bScaleCapturedRange")
-		{
-			bScaleCapturedRange = bScaleCapturedRange;
-		}
-
-		if (PropertyThatChanged->GetName() == "ScaleTopValue")
-		{
-			float Delta = ScaleTopValue / OldScaleTopValue;
-			TArray<float> UnsortedValues;
-			//GEditor->BeginTransaction(FText::FromString("ScaleTop"));
-			TransformSection->Modify();
-			for (auto Type : TransformTypes)
+			if (PropertyThatChanged->GetName() == "FromFrame")
 			{
-				for (auto Axis : Axises)
+				FromFrame = FromFrame;
+			}
+			if (PropertyThatChanged->GetName() == "ToFrame")
+			{
+				ToFrame = ToFrame;
+			}
+
+			if (PropertyThatChanged->GetName() == "bScaleCapturedRange")
+			{
+				bScaleCapturedRange = bScaleCapturedRange;
+			}
+
+			if (PropertyThatChanged->GetName() == "ScaleTopValue")
+			{
+				float Delta = ScaleTopValue / OldScaleTopValue;
+				TArray<float> UnsortedValues;
+
+				TransformSection->Modify();
+				for (auto Type : TransformTypes)
 				{
-					Scale->ScaleTop(TransformSection, Type, Axis, TransformToEdit, MaxValue, MinValue, Delta, UnsortedValues);
+					for (auto Axis : Axises)
+					{
+						UScale::ScaleTop(TransformSection, Type, Axis, TransformToEdit, MaxValue, MinValue, Delta, UnsortedValues);
+					}
+				}
+				if (UnsortedValues.Num())
+				{
+					UnsortedValues.Sort();
+					MaxValue = UnsortedValues[UnsortedValues.Num() - 1];
+					OldScaleTopValue = ScaleTopValue;
+				}	
+			}
+			if (PropertyThatChanged->GetName() == "ScaleBotValue")
+			{
+				TArray<float> UnsortedValues;
+				float Delta = ScaleBotValue / OldScaleBotValue;
+				TransformSection->Modify();
+				for (auto Type : TransformTypes)
+				{
+					for (auto Axis : Axises)
+					{
+						UScale::ScaleBot(TransformSection, Type, Axis, TransformToEdit, MaxValue, MinValue, Delta, UnsortedValues);
+					}
+				}
+				if (UnsortedValues.Num())
+				{
+					UnsortedValues.Sort();
+					MinValue = UnsortedValues[0];
+					OldScaleBotValue = ScaleBotValue;
 				}
 			}
-			if(UnsortedValues.Num())
+			if (PropertyThatChanged->GetName() == "ScaleLeftValue")
 			{
-				UnsortedValues.Sort();
-				MaxValue = UnsortedValues[UnsortedValues.Num() - 1];
-				OldScaleTopValue = ScaleTopValue;
-			}
-		}
-		if (PropertyThatChanged->GetName() == "ScaleBotValue")
-		{
-			TArray<float> UnsortedValues;
-			float Delta = ScaleBotValue / OldScaleBotValue;
-			TransformSection->Modify();
-			for (auto Type : TransformTypes)
-			{
-				for (auto Axis : Axises)
+				TArray<float> UnsortedTimes;
+				float Delta = ScaleLeftValue / OldScaleLeftValue;
+				TransformSection->Modify();
+				for (auto Type : TransformTypes)
 				{
-					Scale->ScaleBot(TransformSection, Type, Axis, TransformToEdit, MaxValue, MinValue, Delta, UnsortedValues);
+					for (auto Axis : Axises)
+					{
+						UScale::ScaleLeft(TransformSection, Type, Axis, TransformToEdit, MaxTime, MinTime, Delta, UnsortedTimes, bScaleCapturedRange);
+					}
+				}
+
+				if (UnsortedTimes.Num())
+				{
+					UnsortedTimes.Sort();
+					MinTime = UnsortedTimes[0];
+					OldScaleLeftValue = ScaleLeftValue;
 				}
 			}
-			if(UnsortedValues.Num())
+			if (PropertyThatChanged->GetName() == "ScaleRightValue")
 			{
-				UnsortedValues.Sort();
-				MinValue = UnsortedValues[0];
-				OldScaleBotValue = ScaleBotValue;
-			}
-		}
-		if (PropertyThatChanged->GetName() == "ScaleLeftValue")
-		{
-			TArray<float> UnsortedTimes;
-			float Delta = ScaleLeftValue / OldScaleLeftValue;
-			TransformSection->Modify();
-			for (auto Type : TransformTypes)
-			{
-				for (auto Axis : Axises)
+				TArray<float> UnsortedTimes;
+				float Delta = ScaleRightValue / OldScaleRightValue;
+
+				TransformSection->Modify();
+				for (auto Type : TransformTypes)
 				{
-					Scale->ScaleLeft(TransformSection, Type, Axis, TransformToEdit, MaxTime, MinTime, Delta, UnsortedTimes, bScaleCapturedRange);
+					for (auto Axis : Axises)
+					{
+						UScale::ScaleRight(TransformSection, Type, Axis, TransformToEdit, MaxTime, MinTime, Delta, UnsortedTimes, bScaleCapturedRange);
+					}
 				}
-			}
 
-			if (UnsortedTimes.Num())
-			{
-				UnsortedTimes.Sort();
-				MinTime = UnsortedTimes[0];
-				OldScaleLeftValue = ScaleLeftValue;
-			}
-		}
-		if (PropertyThatChanged->GetName() == "ScaleRightValue")
-		{
-			TArray<float> UnsortedTimes;
-			float Delta = ScaleRightValue / OldScaleRightValue;
-
-			TransformSection->Modify();
-			for (auto Type : TransformTypes)
-			{
-				for (auto Axis : Axises)
+				if (UnsortedTimes.Num())
 				{
-					Scale->ScaleRight(TransformSection, Type, Axis, TransformToEdit, MaxTime, MinTime, Delta, UnsortedTimes, bScaleCapturedRange);
+					UnsortedTimes.Sort();
+					MaxTime = UnsortedTimes[UnsortedTimes.Num() - 1];
+					OldScaleRightValue = ScaleRightValue;
 				}
-			}
 
-			if (UnsortedTimes.Num())
-			{
-				UnsortedTimes.Sort();
-				MaxTime = UnsortedTimes[UnsortedTimes.Num() - 1];
-				OldScaleRightValue = ScaleRightValue;
 			}
-			
 		}
+		Super::PostEditChangeProperty(PropertyChangedEvent);
 	}
-	Super::PostEditChangeProperty(PropertyChangedEvent);
 }
 
 void USequencerTools::OnToolClosed()
@@ -147,10 +150,6 @@ void USequencerTools::CaptureRange()
 				if (TransformSection->IsValidLowLevel())
 				{
 					GEditor->BeginTransaction(FText::FromString("Capture Range"));
-					TransformSection->Modify();
-					
-					if (FromFrame == ToFrame)
-						return;
 
 					float Step = Sequencer->GetMovieScene()->GetFixedFrameInterval();
 					float LastTime = TransformSection->GetEndTime() + Step;
@@ -162,6 +161,25 @@ void USequencerTools::CaptureRange()
 					float P2 = ToFrame / Frames * 100;
 					float ToTime = LastTime / 100 * P2;
 					
+					if (FromTime > ToTime)
+					{
+						USupport::NotificationBox(FString("\"From Frame\" cannot be greater then \"To Frame\""));
+						GEditor->EndTransaction();
+						return;
+					}
+					if (FromTime == ToTime)
+					{
+						USupport::NotificationBox(FString("\"From Frame\" and \"To Frame\" cannot be equal"));
+						GEditor->EndTransaction();
+						return;
+					}
+					if (FromTime == 0.f && ToTime == 0.f)
+					{
+						USupport::NotificationBox(FString("Select frame range"));
+						GEditor->EndTransaction();
+						return;
+					}
+
 					GetTransformAndCurves(TransformTypes, Axises);
 					
 					TArray <float> UnsortedValues;
@@ -205,6 +223,40 @@ void USequencerTools::ResetCapture()
 	OldScaleLeftValue = ScaleLeftValue;
 	ScaleRightValue = 1.f;
 	OldScaleRightValue = ScaleRightValue;
+}
+
+void USequencerTools::Butterworth()
+{
+	GEditor->BeginTransaction(FText::FromString("Butterworth Filter"));
+	if (TransformSection->IsValidLowLevel())
+	{
+		TransformSection->Modify();
+		for (auto Type : TransformTypes)
+		{
+			for (auto Axis : Axises)
+			{
+				UFilters::Butterworth(Type, Axis, TransformSection, TransformToEdit.GetTransform(Type).GetCurve(Axis).HandlesToEdit, Hz);
+			}
+		}
+	}
+	GEditor->EndTransaction();
+}
+
+void USequencerTools::FilterKeys()
+{
+	GEditor->BeginTransaction(FText::FromString("Filter Keys"));
+	if (TransformSection->IsValidLowLevel())
+	{
+		TransformSection->Modify();
+		for (auto Type : TransformTypes)
+		{
+			for (auto Axis : Axises)
+			{
+				UFilters::FilterKeys(Type, Axis, TransformSection, TransformToEdit.GetTransform(Type).GetCurve(Axis).HandlesToEdit, Delta);
+			}
+		}
+	}
+	GEditor->EndTransaction();
 }
 
 void USequencerTools::GetInfoFromTransformSection(UMovieScene3DTransformSection * TransformSection, float FromTime, float ToTime, CustomTransform& Transform, TArray <float>& UnsortedTimes, TArray <float>& UnsortedValues)
