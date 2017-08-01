@@ -8,6 +8,14 @@
 
 #define LOCTEXT_NAMESPACE "UMaterialTools"
 
+FActorInstance::FActorInstance():mActor(nullptr), mMaterial(nullptr), mMaterialD(0)
+{
+}
+
+FActorInstance::FActorInstance(AActor* Actor, UMaterialInterface* Material, int32 MaterialD): mActor(Actor),mMaterial(Material),mMaterialD(MaterialD)
+{
+}
+
 UMaterialTools::UMaterialTools()
 {
 }
@@ -54,7 +62,7 @@ void UMaterialTools::OnToolClosed()
 void UMaterialTools::CreateInstance()
 {		
 		InstanceList.Empty();
-		TArray<FActorInstance> ActorsMaterial;
+		TArray<FActorInstance> ActorsMaterials;
 		TSet<UMaterial*> ContentSelectedMaterials = GetSelectedMaterialsInContentBrowser();
 		TSet<UMaterial*> ActorSelectedMaterials = GetSelectedActorMaterials();
 
@@ -63,7 +71,6 @@ void UMaterialTools::CreateInstance()
 		FString PackageName;
 		FString CurrentInstanceName;
 		FString InstanceName;
-
 
 		int32 count = 0;
 
@@ -89,10 +96,106 @@ void UMaterialTools::CreateInstance()
 				PackageName = this->BaseMaterialForInstance->GetPathName();
 				Factory->InitialParent = this->BaseMaterialForInstance;
 			}
+
+			//for (TActorIterator<AActor*> ActorItr(GetWorld()); ActorItr; ++ActorItr)
+			//{
+
+			//	AActor *act = Cast<AActor>(*ActorItr);
+
+			//	if (ASkeletalMeshActor* SkelMeshActor = Cast<ASkeletalMeshActor>(act))
+			//	{
+			//		if (SkelMeshActor && SkelMeshActor->GetSkeletalMeshComponent())
+			//		{
+			//			uint32 materialCounter = 0;
+
+			//			for (auto m : SkelMeshActor->GetSkeletalMeshComponent()->SkeletalMesh->Materials)
+			//			{
+			//				UMaterial* material = m.MaterialInterface->GetMaterial();
+			//				ActorsMaterials.Add(FActorInstance(act, material, materialCounter));
+			//				SkelMeshActor->GetSkeletalMeshComponent()->SetMaterial(materialCounter, nullptr);
+			//				materialCounter++;
+			//			}
+			//		}
+			//	}
+			//}
+
 			
+
+			for (TObjectIterator<AActor> Itr; Itr; ++Itr)
+			{
+				// Filter out objects not contained in the target world.
+					AActor *act = Cast<AActor>(*Itr);
+
+					if (ASkeletalMeshActor* SkelMeshActor = Cast<ASkeletalMeshActor>(act))
+					{
+						if (SkelMeshActor && SkelMeshActor->GetSkeletalMeshComponent())
+						{
+							uint32 materialCounter = 0;
+
+							if(SkelMeshActor->GetSkeletalMeshComponent()->SkeletalMesh != nullptr)
+							for (auto m : SkelMeshActor->GetSkeletalMeshComponent()->SkeletalMesh->Materials)
+							{
+								UMaterial* material = m.MaterialInterface->GetMaterial();
+								ActorsMaterials.Add(FActorInstance(act, material, materialCounter));
+								SkelMeshActor->GetSkeletalMeshComponent()->SetMaterial(materialCounter, nullptr);
+								materialCounter++;
+							}
+						}
+					}
+			
+				// Do stuff
+			}
+
+
+			/*	for (TActorIterator<AActor> Itr(GEditor->GetWorld()); Itr; ++Itr)
+				{
+					AActor *act = Cast<AActor>(*Itr);
+
+					if (ASkeletalMeshActor* SkelMeshActor = Cast<ASkeletalMeshActor>(act))
+					{
+						if (SkelMeshActor && SkelMeshActor->GetSkeletalMeshComponent())
+						{
+							uint32 materialCounter = 0;
+
+							for (auto m : SkelMeshActor->GetSkeletalMeshComponent()->SkeletalMesh->Materials)
+							{
+								UMaterial* material = m.MaterialInterface->GetMaterial();
+								ActorsMaterials.Add(FActorInstance(act, material, materialCounter));
+								SkelMeshActor->GetSkeletalMeshComponent()->SetMaterial(materialCounter, nullptr);
+								materialCounter++;
+							}
+						}
+					}
+				}*/
+
 			if (GEditor->GetSelectedActors()->Num() > 0)
 			{
+				FSelectionIterator itSaveMaterials = GEditor->GetSelectedActorIterator();
+
+				for (itSaveMaterials; itSaveMaterials; ++itSaveMaterials)
+				{
+					AActor *act = Cast<AActor>(*itSaveMaterials);
+
+					if (ASkeletalMeshActor* SkelMeshActor = Cast<ASkeletalMeshActor>(act))
+					{
+						if (SkelMeshActor && SkelMeshActor->GetSkeletalMeshComponent())
+						{
+							uint32 materialCounter = 0;
+
+							for (auto m : SkelMeshActor->GetSkeletalMeshComponent()->SkeletalMesh->Materials)
+							{
+								UMaterial* material = m.MaterialInterface->GetMaterial();
+								ActorsMaterials.Add(FActorInstance(act, material, materialCounter));
+								SkelMeshActor->GetSkeletalMeshComponent()->SetMaterial(materialCounter, nullptr);
+								materialCounter++;
+							}
+						}
+					}
+				}
+
 				FSelectionIterator it = GEditor->GetSelectedActorIterator();
+
+
 				for (it; it; ++it)
 				{
 					AActor *act = Cast<AActor>(*it);
@@ -116,6 +219,15 @@ void UMaterialTools::CreateInstance()
 							FString directory = FPackageName::GetLongPackagePath(PackageName);// SkelMeshActor->GetPathName(); //.ToString();
 							FStringAssetReference ThePath = FStringAssetReference(act);
 
+							//for (auto m : SkelMeshActor->GetSkeletalMeshComponent()->SkeletalMesh->Materials)
+							//{
+							//	UMaterial* material = m.MaterialInterface->GetMaterial();
+							//	ActorsMaterials.Add(FActorInstance(act, material, materialCounter));
+							//	SkelMeshActor->GetSkeletalMeshComponent()->SetMaterial(materialCounter, nullptr);
+							//	materialCounter++;
+							//}
+
+							//	materialCounter = 0;
 
 							for (auto m : SkelMeshActor->GetSkeletalMeshComponent()->SkeletalMesh->Materials)
 							{
@@ -123,24 +235,55 @@ void UMaterialTools::CreateInstance()
 								UMaterial* material = m.MaterialInterface->GetMaterial();
 								Name = material->GetName();
 								UTexture* Texture = material->BaseColor.Expression->GetReferencedTexture();
-								SkelMeshActor->GetSkeletalMeshComponent()->SetMaterial(materialCounter, nullptr);
+								//SkelMeshActor->GetSkeletalMeshComponent()->SetMaterial(materialCounter, nullptr);
 								FullPath = SkelMeshActor->GetSkeletalMeshComponent()->SkeletalMesh->GetPathName();
 
 								int32 pointer = 0;
 								FullPath.FindLastChar('/', pointer);
-								//pointer = FullPath.Find("/", ESearchCase::IgnoreCase, ESearchDir::FromEnd,20);
 								auto size = FullPath.GetAllocatedSize();
-								FullPath.RemoveAt(pointer, (size/3)-pointer, true);
+								auto FullPathArray = FullPath.GetCharArray();
+								FullPath.RemoveAt(++pointer, FullPathArray.Num() - pointer, true);
 
 								UMaterialInstanceConstant* instance = CreateAssetByParentMaterial(material, Factory, &FullPath, &Name);
 
 								if (instance != nullptr)
-									SkelMeshActor->GetSkeletalMeshComponent()->SetMaterial(materialCounter, instance);
-								else
-									SkelMeshActor->GetSkeletalMeshComponent()->SetMaterial(materialCounter, material);
+									ActorsMaterials.Add(FActorInstance(act, instance, materialCounter));
+									
+								FString PathToAsset = instance->GetPathName();
 
+								for (auto actorMaterialToSet : ActorsMaterials)
+								{
+								
+									if (PathToAsset == actorMaterialToSet.mMaterial->GetPathName())
+										actorMaterialToSet.mMaterial = instance;
+								}
+								//	SkelMeshActor->GetSkeletalMeshComponent()->SetMaterial(materialCounter, instance);
+								//else
+								//	SkelMeshActor->GetSkeletalMeshComponent()->SetMaterial(materialCounter, material);
 								materialCounter++;
 							}
+
+							for (auto actorMaterialToSet : ActorsMaterials)
+							{
+								if (ASkeletalMeshActor* SkelMeshActor = Cast<ASkeletalMeshActor>(actorMaterialToSet.mActor))
+								{
+									if(actorMaterialToSet.mMaterial != nullptr)
+										SkelMeshActor->GetSkeletalMeshComponent()->SetMaterial(actorMaterialToSet.mMaterialD, actorMaterialToSet.mMaterial);
+									else
+										UMaterialTools::NotificationBox(FString("Material to set null ptr"));
+								}
+							}
+
+
+							//for (auto m : SkelMeshActor->GetSkeletalMeshComponent()->SkeletalMesh->Materials)
+							//{
+							//	UMaterial* material = m.MaterialInterface->GetMaterial();
+							//	ActorsMaterials.Add(FActorInstance(act, material, materialCounter));
+							//	SkelMeshActor->GetSkeletalMeshComponent()->SetMaterial(materialCounter, nullptr);
+							//	materialCounter++;
+							//}
+
+
 						}
 					}
 					else
@@ -153,13 +296,26 @@ void UMaterialTools::CreateInstance()
 						act->GetComponents<UStaticMeshComponent>(actorComponents);
 						UE_LOG(LogTemp, Display, TEXT("contains %d components\n"), actorComponents.Num());
 
-						
+
 						// get materials from each component and add to a TSet
 						for (auto component : actorComponents)
 						{
+							
 							compMaterials.Reset();
 							component->GetUsedMaterials(compMaterials);
 							uint32 materialCounter = 0;
+
+							FullPath = component->StaticMesh->GetPathName();
+
+							int32 pointer = 0;
+							FullPath.FindLastChar('/', pointer);
+							//pointer = FullPath.Find("/", ESearchCase::IgnoreCase, ESearchDir::FromEnd,20);
+							auto size = FullPath.GetAllocatedSize();
+							auto FullPathArray = FullPath.GetCharArray();
+							
+							FullPath.RemoveAt(++pointer, FullPathArray.Num() - pointer, true);
+
+
 							for (auto materialInterface : compMaterials)
 							{
 								UMaterial* material = materialInterface->GetMaterial();

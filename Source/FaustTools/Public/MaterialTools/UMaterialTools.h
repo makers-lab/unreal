@@ -23,9 +23,11 @@ USTRUCT(Blueprintable)
 struct FActorInstance
 {
 	GENERATED_BODY()
-	UMaterialInstanceConstant* Instance;
-	AActor* Actor;
-	int32 MaterialD;
+	AActor* mActor;
+	UMaterialInterface* mMaterial;
+	int32 mMaterialD;
+	FActorInstance();
+	FActorInstance(AActor* Actor, UMaterialInterface* Material, int32 MaterialD);
 };
 
 
