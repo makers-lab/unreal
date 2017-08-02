@@ -55,6 +55,9 @@ public:
 	UFUNCTION(Exec)
 	void CreateInstance();
 
+	UFUNCTION(BlueprintCallable, Category = "Faust Tools")
+	static UTexture* GetTextureFromBaseMaterialNode(UMaterialInterface* material);
+
 	static void NotificationBox(FString String, float FadeIn = 0.1f, float Expire = 1.5, float FadeOut = 1.f);
 
 };

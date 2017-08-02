@@ -14,7 +14,7 @@
   "Modules": [
     {
       "Name": "FaustTools",
-      "Type": "Editor"
+      "Type": "Runtime"
     }
   ]
 }
