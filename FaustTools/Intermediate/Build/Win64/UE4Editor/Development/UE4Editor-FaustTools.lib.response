@@ -1,0 +1,14 @@
+/NOLOGO
+/errorReport:prompt
+/MACHINE:x64
+/SUBSYSTEM:WINDOWS
+/DEF
+/NAME:"UE4Editor-FaustTools.dll"
+/IGNORE:4221
+/NODEFAULTLIB
+"E:\Sadovnichy\UE_4.16\Engine\Intermediate\Build\Win64\UE4Editor\Development\UnrealEd\SharedPCH.UnrealEd.h.obj"
+"E:\Sadovnichy\SequencerPlugin\Plugins\FaustTools\Intermediate\Build\Win64\UE4Editor\Development\FaustTools\Module.FaustTools.cpp.obj"
+"E:\Sadovnichy\SequencerPlugin\Plugins\FaustTools\Intermediate\Build\Win64\UE4Editor\Development\FaustTools\FaustTools.generated.cpp.obj"
+"E:\Sadovnichy\UE_4.16\Engine\Intermediate\Build\Win64\UE4Editor\Development\FaustTools\PCLaunch.rc.res"
+"E:\Sadovnichy\UE_4.16\Engine\Intermediate\Build\Win64\UE4Editor\Development\ModuleVersionResource.rc.inl.res"
+/OUT:"E:\Sadovnichy\SequencerPlugin\Plugins\FaustTools\Intermediate\Build\Win64\UE4Editor\Development\UE4Editor-FaustTools.lib"

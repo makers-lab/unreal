@@ -1,0 +1,19 @@
+{
+	"FileVersion" : 3,
+	"FriendlyName" : "FaustTools",
+	"Version" : 1,
+	"VersionName" : "1.0",
+	"CreatedBy" : "",
+	"CreatedByURL" : "",
+	"Description" : "",
+	"Category" : "Animation",
+	"EnabledByDefault" : true,
+
+  	"Modules": 
+	[
+    		{
+      			"Name": "FaustTools",
+      			"Type": "Editor"
+    		}
+  	]
+}
