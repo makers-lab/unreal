@@ -37,22 +37,23 @@ struct Transform
 	Curve Y;
 	Curve Z;
 
-	FORCEINLINE Curve& GetCurve(EAxis::Type Axis)
+	FORCEINLINE Curve* GetCurve(EAxis::Type Axis)
 	{
 		switch (Axis)
 		{
 		case EAxis::None:
 			break;
 		case EAxis::X:
-			return X;
+			return &X;
 			break;
 		case EAxis::Y:
-			return Y;
+			return &Y;
 			break;
 		case EAxis::Z:
-			return Z;
+			return &Z;
 			break;
 		}
+		return nullptr;
 	}
 };
 
@@ -77,20 +78,23 @@ struct CustomTransform
 		Scale.Z.Reset();
 	}
 
-	FORCEINLINE Transform& GetTransform(TransformType Type)
+	FORCEINLINE Transform* GetTransform(TransformType Type)
 	{
 		switch (Type)
 		{
 		case Loc:
-			return Location;
+			return &Location;
 			break;
 		case Rot:
-			return Rotation;
+			return &Rotation;
 			break;
 		case Scal:
-			return Scale;
+			return &Scale;
 			break;
+		default:
+			return nullptr;
 		}
+		
 	}
 };
 

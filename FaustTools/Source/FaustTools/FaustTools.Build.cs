@@ -2,8 +2,8 @@ using UnrealBuildTool;
 
 public class FaustTools : ModuleRules
 {
-	public FaustTools(TargetInfo Target)
-	{
+	public FaustTools(ReadOnlyTargetRules Target) : base(Target)
+    {
 		PublicDependencyModuleNames.AddRange(
 			new string[] {
 				"Core",
@@ -13,24 +13,19 @@ public class FaustTools : ModuleRules
 				"UnrealEd",
                 "Networking",
                 "Sockets",
-                "Core",
-            "InputCore",
-            "EditorStyle",
-            "Slate",
-            "RenderCore",
-            "ShaderCore",
-            "SlateCore",
-            "LevelSequence"
+                "InputCore",
+                "EditorStyle",
+                "RenderCore",
+                "ShaderCore",
+                "SlateCore",
+                "LevelSequence"
             }
 		);
 		
 		PrivateDependencyModuleNames.AddRange(
 			new string[] {
-				"InputCore",
-				"SlateCore",
 				"PropertyEditor",
 				"LevelEditor",
-                "EditorStyle",
                 "MovieScene",
                 "MovieSceneTracks",
             }

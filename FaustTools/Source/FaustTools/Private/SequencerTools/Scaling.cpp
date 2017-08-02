@@ -10,7 +10,7 @@ void UScale::ScaleTop(UMovieScene3DTransformSection * TransformSection, Transfor
 	{
 	case Loc:
 	{
-		TArray<FKeyHandle> HandlesToEdit = Transform.Location.GetCurve(Axis).HandlesToEdit;
+		TArray<FKeyHandle> HandlesToEdit = Transform.Location.GetCurve(Axis)->HandlesToEdit;
 
 		for (auto& Handle : HandlesToEdit)
 		{
@@ -24,7 +24,7 @@ void UScale::ScaleTop(UMovieScene3DTransformSection * TransformSection, Transfor
 		break;
 	case Rot:
 	{
-		TArray<FKeyHandle> HandlesToEdit = Transform.Rotation.GetCurve(Axis).HandlesToEdit;
+		TArray<FKeyHandle> HandlesToEdit = Transform.Rotation.GetCurve(Axis)->HandlesToEdit;
 		for (auto& Handle : HandlesToEdit)
 		{
 			float DiffMinNext = TransformSection->GetRotationCurve(Axis).GetKeyValue(Handle) - MinValue;
@@ -37,7 +37,7 @@ void UScale::ScaleTop(UMovieScene3DTransformSection * TransformSection, Transfor
 		break;
 	case Scal:
 	{
-		TArray<FKeyHandle> HandlesToEdit = Transform.Scale.GetCurve(Axis).HandlesToEdit;
+		TArray<FKeyHandle> HandlesToEdit = Transform.Scale.GetCurve(Axis)->HandlesToEdit;
 
 		for (auto& Handle : HandlesToEdit)
 		{
@@ -60,7 +60,7 @@ void UScale::ScaleBot(UMovieScene3DTransformSection * TransformSection, Transfor
 	{
 	case Loc:
 	{
-		TArray<FKeyHandle> HandlesToEdit = Transform.Location.GetCurve(Axis).HandlesToEdit;
+		TArray<FKeyHandle> HandlesToEdit = Transform.Location.GetCurve(Axis)->HandlesToEdit;
 
 		for (auto& Handle : HandlesToEdit)
 		{
@@ -74,7 +74,7 @@ void UScale::ScaleBot(UMovieScene3DTransformSection * TransformSection, Transfor
 	break;
 	case Rot:
 	{
-		TArray<FKeyHandle> HandlesToEdit = Transform.Rotation.GetCurve(Axis).HandlesToEdit;
+		TArray<FKeyHandle> HandlesToEdit = Transform.Rotation.GetCurve(Axis)->HandlesToEdit;
 		for (auto& Handle : HandlesToEdit)
 		{
 			float DiffMaxPrev = TransformSection->GetRotationCurve(Axis).GetKeyValue(Handle) - MaxValue;
@@ -87,7 +87,7 @@ void UScale::ScaleBot(UMovieScene3DTransformSection * TransformSection, Transfor
 	break;
 	case Scal:
 	{
-		TArray<FKeyHandle> HandlesToEdit = Transform.Scale.GetCurve(Axis).HandlesToEdit;
+		TArray<FKeyHandle> HandlesToEdit = Transform.Scale.GetCurve(Axis)->HandlesToEdit;
 
 		for (auto& Handle : HandlesToEdit)
 		{
@@ -110,7 +110,7 @@ void UScale::ScaleLeft(UMovieScene3DTransformSection * TransformSection, Transfo
 	{
 	case Loc:
 	{
-		TArray<FKeyHandle> Handles = Transform.Location.GetCurve(Axis).HandlesToEdit;
+		TArray<FKeyHandle> Handles = Transform.Location.GetCurve(Axis)->HandlesToEdit;
 
 		if (Handles.Num())
 		{
@@ -128,7 +128,7 @@ void UScale::ScaleLeft(UMovieScene3DTransformSection * TransformSection, Transfo
 
 			if (!bScaleCapturedOnly)
 			{
-				TArray<FKeyHandle> HandlesOutOfRange = Transform.Location.GetCurve(Axis).HandlesLeftOutOfRange;
+				TArray<FKeyHandle> HandlesOutOfRange = Transform.Location.GetCurve(Axis)->HandlesLeftOutOfRange;
 
 				for (auto& Handle : HandlesOutOfRange)
 				{
@@ -142,7 +142,7 @@ void UScale::ScaleLeft(UMovieScene3DTransformSection * TransformSection, Transfo
 
 	case Rot:
 	{
-		TArray<FKeyHandle> Handles = Transform.Rotation.GetCurve(Axis).HandlesToEdit;
+		TArray<FKeyHandle> Handles = Transform.Rotation.GetCurve(Axis)->HandlesToEdit;
 
 		if (Handles.Num())
 		{
@@ -161,7 +161,7 @@ void UScale::ScaleLeft(UMovieScene3DTransformSection * TransformSection, Transfo
 
 			if (!bScaleCapturedOnly)
 			{
-				TArray<FKeyHandle> HandlesOutOfRange = Transform.Rotation.GetCurve(Axis).HandlesLeftOutOfRange;
+				TArray<FKeyHandle> HandlesOutOfRange = Transform.Rotation.GetCurve(Axis)->HandlesLeftOutOfRange;
 
 				for (auto& Handle : HandlesOutOfRange)
 				{
@@ -175,7 +175,7 @@ void UScale::ScaleLeft(UMovieScene3DTransformSection * TransformSection, Transfo
 
 	case Scal:
 	{
-		TArray<FKeyHandle> Handles = Transform.Scale.GetCurve(Axis).HandlesToEdit;
+		TArray<FKeyHandle> Handles = Transform.Scale.GetCurve(Axis)->HandlesToEdit;
 
 		if (Handles.Num())
 		{
@@ -194,7 +194,7 @@ void UScale::ScaleLeft(UMovieScene3DTransformSection * TransformSection, Transfo
 
 			if (!bScaleCapturedOnly)
 			{
-				TArray<FKeyHandle> HandlesOutOfRange = Transform.Scale.GetCurve(Axis).HandlesLeftOutOfRange;
+				TArray<FKeyHandle> HandlesOutOfRange = Transform.Scale.GetCurve(Axis)->HandlesLeftOutOfRange;
 
 				for (auto& Handle : HandlesOutOfRange)
 				{
@@ -216,7 +216,7 @@ void UScale::ScaleRight(UMovieScene3DTransformSection * TransformSection, Transf
 	{
 	case Loc:
 	{
-		TArray<FKeyHandle> Handles = Transform.Location.GetCurve(Axis).HandlesToEdit;
+		TArray<FKeyHandle> Handles = Transform.Location.GetCurve(Axis)->HandlesToEdit;
 
 		if (Handles.Num())
 		{
@@ -234,7 +234,7 @@ void UScale::ScaleRight(UMovieScene3DTransformSection * TransformSection, Transf
 
 			if (!bScaleCapturedOnly)
 			{
-				TArray<FKeyHandle> HandlesOutOfRange = Transform.Location.GetCurve(Axis).HandlesRightOutOfRange;
+				TArray<FKeyHandle> HandlesOutOfRange = Transform.Location.GetCurve(Axis)->HandlesRightOutOfRange;
 
 				for (auto& Handle : HandlesOutOfRange)
 				{
@@ -248,7 +248,7 @@ void UScale::ScaleRight(UMovieScene3DTransformSection * TransformSection, Transf
 
 	case Rot:
 	{
-		TArray<FKeyHandle> Handles = Transform.Rotation.GetCurve(Axis).HandlesToEdit;
+		TArray<FKeyHandle> Handles = Transform.Rotation.GetCurve(Axis)->HandlesToEdit;
 
 		if (Handles.Num())
 		{
@@ -266,7 +266,7 @@ void UScale::ScaleRight(UMovieScene3DTransformSection * TransformSection, Transf
 
 			if (!bScaleCapturedOnly)
 			{
-				TArray<FKeyHandle> HandlesOutOfRange = Transform.Rotation.GetCurve(Axis).HandlesRightOutOfRange;
+				TArray<FKeyHandle> HandlesOutOfRange = Transform.Rotation.GetCurve(Axis)->HandlesRightOutOfRange;
 
 				for (auto& Handle : HandlesOutOfRange)
 				{
@@ -280,7 +280,7 @@ void UScale::ScaleRight(UMovieScene3DTransformSection * TransformSection, Transf
 
 	case Scal:
 	{
-		TArray<FKeyHandle> Handles = Transform.Scale.GetCurve(Axis).HandlesToEdit;
+		TArray<FKeyHandle> Handles = Transform.Scale.GetCurve(Axis)->HandlesToEdit;
 
 		if (Handles.Num())
 		{
@@ -299,7 +299,7 @@ void UScale::ScaleRight(UMovieScene3DTransformSection * TransformSection, Transf
 
 			if (!bScaleCapturedOnly)
 			{
-				TArray<FKeyHandle> HandlesOutOfRange = Transform.Scale.GetCurve(Axis).HandlesRightOutOfRange;
+				TArray<FKeyHandle> HandlesOutOfRange = Transform.Scale.GetCurve(Axis)->HandlesRightOutOfRange;
 
 				for (auto& Handle : HandlesOutOfRange)
 				{

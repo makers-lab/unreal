@@ -1,27 +1,18 @@
 #include "FaustTools/Private/FaustToolsPrivatePCH.h"
 #include "FaustToolsBaseClass.h"
 #include "PropertyEditorModule.h"
-#include "LevelEditor.h"
+#include "FaustToolsModule.h"
 #include "FaustToolsCustomization.h"
 
-#define LOCTEXT_NAMESPACE "DemoTools"
+#include "Editor/LevelEditor/Public/LevelEditor.h"
 
-class FEditorExtensionsEditorModule : public IModuleInterface
-{
-public:
-	// IMoudleInterface interface
-	virtual void StartupModule() override;
-	virtual void ShutdownModule() override;
-	// End of IModuleInterface interface
+#include "TutorialMetaData.h"
+#include "SDockTab.h"
+#include "ModuleManager.h"
 
-	static void TriggerTool(UClass* ToolClass);
-	static void CreateToolListMenu(class FMenuBuilder& MenuBuilder);
-	static void OnToolWindowClosed(const TSharedRef<SWindow>& Window, UFaustToolsBaseClass* Instance);
+#define LOCTEXT_NAMESPACE "FFaustToolsEditorModule"
 
-	TSharedPtr<FUICommandList> CommandList;
-};
-
-void FEditorExtensionsEditorModule::StartupModule()
+void FFaustToolsEditorModule::StartupModule()
 {
 	// Register the details customizations
 	{
@@ -44,7 +35,7 @@ void FEditorExtensionsEditorModule::StartupModule()
 			{
 				MenuBuilder.AddSubMenu(LOCTEXT("FaustTools", "Faust Tools"),
 					LOCTEXT("FaustToolsTooltip", "List of tools"),
-					FNewMenuDelegate::CreateStatic(&FEditorExtensionsEditorModule::CreateToolListMenu)
+					FNewMenuDelegate::CreateStatic(&FFaustToolsEditorModule::CreateToolListMenu)
 					);
 			}
 		};
@@ -60,13 +51,13 @@ void FEditorExtensionsEditorModule::StartupModule()
 	}
 }
 
-void FEditorExtensionsEditorModule::ShutdownModule()
+void FFaustToolsEditorModule::ShutdownModule()
 {
 	FPropertyEditorModule& PropertyModule = FModuleManager::LoadModuleChecked<FPropertyEditorModule>("PropertyEditor");
 	PropertyModule.UnregisterCustomClassLayout("FaustToolsBaseClass");
 }
 
-void FEditorExtensionsEditorModule::TriggerTool(UClass* ToolClass)
+void FFaustToolsEditorModule::TriggerTool(UClass* ToolClass)
 {
 	UFaustToolsBaseClass* ToolInstance = NewObject<UFaustToolsBaseClass>(GetTransientPackage(), ToolClass);
 	ToolInstance->AddToRoot();
@@ -77,10 +68,10 @@ void FEditorExtensionsEditorModule::TriggerTool(UClass* ToolClass)
 	ObjectsToView.Add(ToolInstance);
 	TSharedRef<SWindow> Window = PropertyModule.CreateFloatingDetailsView(ObjectsToView, /*bIsLockeable=*/ false);
 	Window->SetTitle(FText::FromString(ToolClass->GetName()));
-	Window->SetOnWindowClosed(FOnWindowClosed::CreateStatic(&FEditorExtensionsEditorModule::OnToolWindowClosed, ToolInstance));
+	Window->SetOnWindowClosed(FOnWindowClosed::CreateStatic(&FFaustToolsEditorModule::OnToolWindowClosed, ToolInstance));
 }
 
-void FEditorExtensionsEditorModule::CreateToolListMenu(class FMenuBuilder& MenuBuilder)
+void FFaustToolsEditorModule::CreateToolListMenu(class FMenuBuilder& MenuBuilder)
 {
 	for (TObjectIterator<UClass> ClassIt; ClassIt; ++ClassIt)
 	{
@@ -93,7 +84,7 @@ void FEditorExtensionsEditorModule::CreateToolListMenu(class FMenuBuilder& MenuB
 				FText MenuDescription = FText::Format(LOCTEXT("ToolMenuDescription", "{0}"), FText::FromString(FriendlyName));
 				FText MenuTooltip = FText::Format(LOCTEXT("ToolMenuTooltip", "Execute the {0} tool"), FText::FromString(FriendlyName));
 
-				FUIAction Action(FExecuteAction::CreateStatic(&FEditorExtensionsEditorModule::TriggerTool, Class));
+				FUIAction Action(FExecuteAction::CreateStatic(&FFaustToolsEditorModule::TriggerTool, Class));
 
 				MenuBuilder.AddMenuEntry(
 					MenuDescription,
@@ -105,12 +96,12 @@ void FEditorExtensionsEditorModule::CreateToolListMenu(class FMenuBuilder& MenuB
 	}
 }
 
-void FEditorExtensionsEditorModule::OnToolWindowClosed(const TSharedRef<SWindow>& Window, UFaustToolsBaseClass* Instance)
+void FFaustToolsEditorModule::OnToolWindowClosed(const TSharedRef<SWindow>& Window, UFaustToolsBaseClass* Instance)
 {
 	Instance->RemoveFromRoot();
 	Instance->OnToolClosed();
 }
-
-IMPLEMENT_MODULE(FEditorExtensionsEditorModule, DemoEditorExtensionsEditor);
-
 #undef LOCTEXT_NAMESPACE
+
+IMPLEMENT_MODULE(FFaustToolsEditorModule, FaustTools);
+
