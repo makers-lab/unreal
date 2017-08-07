@@ -52,6 +52,9 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Material for instance")
 	UMaterial* BaseMaterialForInstance;
 
+	UPROPERTY(EditAnywhere, Category = "Material for instance")
+	bool UniqueActorMaterials;
+
 	UFUNCTION(Exec)
 	void CreateInstance();
 

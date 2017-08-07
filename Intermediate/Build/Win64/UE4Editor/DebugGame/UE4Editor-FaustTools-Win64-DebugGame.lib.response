@@ -1,0 +1,14 @@
+/NOLOGO
+/errorReport:prompt
+/MACHINE:x64
+/SUBSYSTEM:WINDOWS
+/DEF
+/NAME:"UE4Editor-FaustTools-Win64-DebugGame.dll"
+/IGNORE:4221
+/NODEFAULTLIB
+"D:\UnrealEngine\UE_Installed\UE_4.16\Engine\Intermediate\Build\Win64\UE4Editor\Development\UnrealEd\SharedPCH.UnrealEd.NonOptimized.h.obj"
+"D:\UE_projects\TestSequancer\Plugins\FaustTools\Intermediate\Build\Win64\UE4Editor\DebugGame\FaustTools\Module.FaustTools.cpp.obj"
+"D:\UE_projects\TestSequancer\Plugins\FaustTools\Intermediate\Build\Win64\UE4Editor\DebugGame\FaustTools\FaustTools.generated.cpp.obj"
+"D:\UnrealEngine\UE_Installed\UE_4.16\Engine\Intermediate\Build\Win64\UE4Editor\Development\FaustTools\PCLaunch.rc.res"
+"D:\UnrealEngine\UE_Installed\UE_4.16\Engine\Intermediate\Build\Win64\UE4Editor\Development\ModuleVersionResource.rc.inl.res"
+/OUT:"D:\UE_projects\TestSequancer\Plugins\FaustTools\Intermediate\Build\Win64\UE4Editor\DebugGame\UE4Editor-FaustTools-Win64-DebugGame.lib"

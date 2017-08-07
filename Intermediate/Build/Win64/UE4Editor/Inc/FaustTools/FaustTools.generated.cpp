@@ -181,6 +181,8 @@ static struct FScriptStruct_FaustTools_StaticRegisterNativesFActorInstance
 				OuterClass->LinkChild(Z_Construct_UFunction_UMaterialTools_GetTextureFromBaseMaterialNode());
 
 PRAGMA_DISABLE_DEPRECATION_WARNINGS
+				CPP_BOOL_PROPERTY_BITMASK_STRUCT(UniqueActorMaterials, UMaterialTools, bool);
+				UProperty* NewProp_UniqueActorMaterials = new(EC_InternalUseOnlyConstructor, OuterClass, TEXT("UniqueActorMaterials"), RF_Public|RF_Transient|RF_MarkAsNative) UBoolProperty(FObjectInitializer(), EC_CppProperty, CPP_BOOL_PROPERTY_OFFSET(UniqueActorMaterials, UMaterialTools), 0x0010000000000001, CPP_BOOL_PROPERTY_BITMASK(UniqueActorMaterials, UMaterialTools), sizeof(bool), true);
 				UProperty* NewProp_BaseMaterialForInstance = new(EC_InternalUseOnlyConstructor, OuterClass, TEXT("BaseMaterialForInstance"), RF_Public|RF_Transient|RF_MarkAsNative) UObjectProperty(CPP_PROPERTY_BASE(BaseMaterialForInstance, UMaterialTools), 0x0010000000000001, Z_Construct_UClass_UMaterial_NoRegister());
 PRAGMA_ENABLE_DEPRECATION_WARNINGS
 				OuterClass->AddFunctionToFunctionMapWithOverriddenName(Z_Construct_UFunction_UMaterialTools_CreateInstance(), "CreateInstance"); // 4254733155
@@ -194,6 +196,8 @@ PRAGMA_ENABLE_DEPRECATION_WARNINGS
 				MetaData->SetValue(OuterClass, TEXT("IncludePath"), TEXT("MaterialTools/UMaterialTools.h"));
 				MetaData->SetValue(OuterClass, TEXT("IsBlueprintBase"), TEXT("true"));
 				MetaData->SetValue(OuterClass, TEXT("ModuleRelativePath"), TEXT("Public/MaterialTools/UMaterialTools.h"));
+				MetaData->SetValue(NewProp_UniqueActorMaterials, TEXT("Category"), TEXT("Material for instance"));
+				MetaData->SetValue(NewProp_UniqueActorMaterials, TEXT("ModuleRelativePath"), TEXT("Public/MaterialTools/UMaterialTools.h"));
 				MetaData->SetValue(NewProp_BaseMaterialForInstance, TEXT("Category"), TEXT("Material for instance"));
 				MetaData->SetValue(NewProp_BaseMaterialForInstance, TEXT("ModuleRelativePath"), TEXT("Public/MaterialTools/UMaterialTools.h"));
 #endif
@@ -202,7 +206,7 @@ PRAGMA_ENABLE_DEPRECATION_WARNINGS
 		check(OuterClass->GetClass());
 		return OuterClass;
 	}
-	IMPLEMENT_CLASS(UMaterialTools, 1527601880);
+	IMPLEMENT_CLASS(UMaterialTools, 2129501954);
 	static FCompiledInDefer Z_CompiledInDefer_UClass_UMaterialTools(Z_Construct_UClass_UMaterialTools, &UMaterialTools::StaticClass, TEXT("/Script/FaustTools"), TEXT("UMaterialTools"), false, nullptr, nullptr, nullptr);
 	DEFINE_VTABLE_PTR_HELPER_CTOR(UMaterialTools);
 	void UMayaToUE::StaticRegisterNativesUMayaToUE()
@@ -316,7 +320,7 @@ PRAGMA_ENABLE_DEPRECATION_WARNINGS
 			ReturnPackage = CastChecked<UPackage>(StaticFindObjectFast(UPackage::StaticClass(), nullptr, FName(TEXT("/Script/FaustTools")), false, false));
 			ReturnPackage->SetPackageFlags(PKG_CompiledIn | 0x00000000);
 			FGuid Guid;
-			Guid.A = 0x6F0DDB06;
+			Guid.A = 0xDB956688;
 			Guid.B = 0xB6712D91;
 			Guid.C = 0x00000000;
 			Guid.D = 0x00000000;
