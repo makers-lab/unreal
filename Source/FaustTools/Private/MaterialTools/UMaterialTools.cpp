@@ -151,7 +151,6 @@ void UMaterialTools::CreateInstance()
 			}
 
 
-			
 			GEditor->BeginTransaction(FText::FromString("Reset skeletal actros material"));
 
 			for (TObjectIterator<AActor> Itr; Itr; ++Itr)
@@ -169,10 +168,13 @@ void UMaterialTools::CreateInstance()
 							{
 								int32 NamePath =  ActorsMaterialsName.Find(m.MaterialInterface->GetMaterial());
 
+
+								//SkelMeshActor->GetSkeletalMeshComponent()->SkeletalMesh->
+
 								if (NamePath != INDEX_NONE)//ActorsMaterialsName.Find(m.MaterialInterface->GetMaterial()->GetPathName()))
 								{
 									SkelMeshActor->GetSkeletalMeshComponent()->Modify();
-								//	SkelMeshActor->GetSkeletalMeshComponent()->SetMaterial(materialCounter, nullptr);
+									SkelMeshActor->GetSkeletalMeshComponent()->SetMaterial(materialCounter, nullptr);
 								}
 								materialCounter++;
 							}
@@ -241,15 +243,10 @@ void UMaterialTools::CreateInstance()
 
 							for (auto m : SkelMeshActor->GetSkeletalMeshComponent()->SkeletalMesh->Materials)
 							{
-								UTexture* Texture = nullptr;
 								UMaterial* material = m.MaterialInterface->GetMaterial();
 								Name = material->GetName();
-								
+
 							
-
-								if(material->BaseColor.Expression != nullptr)
-									Texture = material->BaseColor.Expression->GetReferencedTexture();
-
 								
 
 								FullPath = SkelMeshActor->GetSkeletalMeshComponent()->SkeletalMesh->GetPathName();
@@ -458,10 +455,21 @@ UMaterialInstanceConstant*  UMaterialTools::CreateAssetByParentMaterial(UMateria
 			UMaterialInstanceConstant* instance = (UMaterialInstanceConstant*)NewAsset;
 			if (ParentMaterial->BaseColor.Expression != nullptr)
 			{
-				UTexture* Texture = ParentMaterial->BaseColor.Expression->GetReferencedTexture();
+				UTexture*   Texture = ParentMaterial->BaseColor.Expression->GetReferencedTexture();
 				instance->SetTextureParameterValueEditorOnly("Texture", Texture);
 			}
-
+				if (ParentMaterial->Roughness.Expression != nullptr)
+			{
+				UTexture*	Roughness = ParentMaterial->Roughness.Expression->GetReferencedTexture();
+				instance->SetTextureParameterValueEditorOnly("Roughness", Roughness);
+			}
+			
+			if (ParentMaterial->Normal.Expression != nullptr)
+			{
+				UTexture*	Normal = ParentMaterial->Normal.Expression->GetReferencedTexture();
+				instance->SetTextureParameterValueEditorOnly("Normal", Normal);
+			}
+		
 			InstanceList.Add(FullPathName, instance);
 
 			return instance;
